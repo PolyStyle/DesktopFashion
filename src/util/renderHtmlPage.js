@@ -34,7 +34,7 @@ export default (store, content) => {
           Object.keys(assets.styles).length === 0 ?
             `<style>${
               require('../theme/normalize.css')._style +
-              require('../containers/App/styles.scss')._style +
+              require('../containers/App/styles.css')._style +
               require('../containers/Home/styles.scss')._style +
               require('../containers/UserInfo/styles.scss')._style +
               require('../containers/NotFound/styles.scss')._style +

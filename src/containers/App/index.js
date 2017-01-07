@@ -3,12 +3,12 @@ import Helmet from 'react-helmet';
 import config from '../../config';
 
 import '../../theme/normalize.css';
-import styles from './styles.scss';
+import styles from './styles.css';
 
 const App = ({ children }) => (
-  <div className={styles.App}>
+  <div className={styles.AppStyle}>
     <Helmet {...config.app} />
-    <div className={styles.header}>
+    <div>
       <img src={require('./assets/logo.svg')} alt="Logo" role="presentation" />
       <h1>{config.app.title}</h1>
     </div>
