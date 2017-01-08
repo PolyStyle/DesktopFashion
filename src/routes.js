@@ -34,6 +34,25 @@ export default function createRoutes(store) {
         },
       },
       {
+        path: '/tags',
+        getComponent(nextState, cb) {
+          const importModules = Promise.all([
+            System.import('./containers/Tags'),
+            System.import('./containers/Tags/reducer'),
+          ]);
+
+          const renderRoute = loadModule(cb);
+
+          importModules
+            .then(([Component, reducer]) => {
+              injectReducer(store, 'tags', reducer.default);
+
+              renderRoute(Component);
+            })
+            .catch(errorLoading);
+        },
+      },
+      {
         path: '/UserInfo/:id',
         getComponent(nextState, cb) {
           const importModules = Promise.all([

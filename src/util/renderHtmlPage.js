@@ -49,7 +49,7 @@ export default (store, content) => {
         <script type="text/javascript">
           ${store && `window.__INITIAL_STATE__=${serialize(store.getState())}`}
         </script>
-
+        <link rel="stylesheet" href="https://unpkg.com/bootstrap@4.0.0-alpha.5/dist/css/bootstrap.min.css">
         <!--[if gte IE 9 ]>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-sham.min.js"></script>

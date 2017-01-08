@@ -26,6 +26,7 @@ export default function createReducer(asyncReducers) {
     // Register the inital async reducers, otherwise you will get the warning of Redux
     home: (state = Map({})) => state,
     userInfo: (state = Map({})) => state,
+    tags: (state = {}) => state,
     ...asyncReducers,
   });
 }

@@ -12,11 +12,10 @@ html {
   -webkit-text-size-adjust: 100%; /* 2 */
 }
 
-/**
- * Remove the margin in all browsers (opinionated).
- */
+ 
 
 body {
+  font-family: 'avenir-next-bold', Arial, Helvetica, sans-serif;
   margin: 0;
 }
 
@@ -103,13 +102,6 @@ a {
 a:active,
 a:hover {
   outline-width: 0;
-}
-
-
-
-
-.AppStyle {
-  background-color: '#fc0';
 }
 
 
@@ -427,3 +419,5 @@ textarea {
   -webkit-appearance: button; /* 1 */
   font: inherit; /* 2 */
 }
+
+
