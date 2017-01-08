@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Table, Button, Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import { connect } from 'react-redux';
+import TagComponent from './tagComponent';
 import * as action from './action';
 
 
@@ -59,14 +60,7 @@ class Tags extends Component {
             </thead>
             <tbody>
               {this.props.tags.map((tag, index) => (
-                <tr key={index} >
-                  <th scope="row">{tag.id}</th>
-                  <td>{tag.displayName}</td>
-                  <td>
-                    <Button color="primary" size="sm">edit</Button>
-                    <Button color="secondary" size="sm">secondary</Button>
-                  </td>
-                </tr>
+                <TagComponent key={index} tag={tag} />
               ))}
             </tbody>
           </Table>
