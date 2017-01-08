@@ -1,13 +1,16 @@
 import React, { PropTypes } from 'react';
-import { Button, Input } from 'reactstrap';
+import { Button, Input, Badge } from 'reactstrap';
 
 class TagComponent extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       isEdited: false,
       value: props.tag.displayName,
+      index: props.index,
+      id: props.tag.id,
       tempValue: props.tag.displayName,
     };
     this.handleClick = this.handleClick.bind(this);
@@ -30,14 +33,14 @@ class TagComponent extends React.Component {
     this.setState({
       value: this.state.tempValue,
       isEdited: false,
-    });
+    }, this.props.saveHandler(this.state));
   }
 
   render() {
     // use the classSet addon to concat an array of class names together
     return (
       <tr>
-        <th scope="row">{this.props.tag.id}</th>
+        <th scope="row">{this.props.tag.id || <Badge color="default" pill>new</Badge>}</th>
         <td>
           {!this.state.isEdited && this.state.value}
           {this.state.isEdited &&
@@ -58,6 +61,8 @@ TagComponent.propTypes = {
     id: PropTypes.number,
     displayName: PropTypes.string,
   }),
+  index: PropTypes.number,
+  saveHandler: PropTypes.function,
 };
 
 export default TagComponent;

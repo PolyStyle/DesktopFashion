@@ -17,10 +17,21 @@ class Tags extends Component {
       dispatch(action.addTag()),
     ]);
   }
-
+  static updateTag(dispatch, id, value) {
+    return Promise.all([
+      dispatch(action.updateTag(id, value)),
+    ]);
+  }
+  static createTag(dispatch, index, value) {
+    // the index is the position in the current tags redux. Not the id on db.
+    return Promise.all([
+      dispatch(action.createTag(index, value)),
+    ]);
+  }
   constructor() {
     super();
     this.addTagHandler = this.addTagHandler.bind(this);
+    this.saveHandler = this.saveHandler.bind(this);
   }
 
   componentDidMount() {
@@ -28,15 +39,28 @@ class Tags extends Component {
     // Fetching data for client side rendering
     Tags.fetchData(dispatch, params);
   }
-  componentDidUpdate(prevProps, prevState) {
-    console.log('PrevProps', prevProps);
-    console.log('PrevState', prevState);
-    console.log('PrevProps', this.props);
-    console.log('PrevState', this.state);
+  componentWillReceiveProps(nextProps) {
+    console.log('new PROPS');
+    console.log(nextProps);
   }
   addTagHandler() {
     const { dispatch } = this.props;
     Tags.addTag(dispatch);
+  }
+
+  saveHandler(tag) {
+    console.log('TAG', tag);
+    console.log(this);
+    const { dispatch } = this.props;
+    const newValue = tag.tempValue;
+    const id = tag.id;
+    if (id) {
+      // This is an existing tag, just update it.
+      Tags.updateTag(dispatch, id, newValue);
+    } else {
+      // This is a new tag, create it.
+      Tags.createTag(dispatch, tag.index, newValue);
+    }
   }
 
   render() {
@@ -60,10 +84,11 @@ class Tags extends Component {
             </thead>
             <tbody>
               {this.props.tags.map((tag, index) => (
-                <TagComponent key={index} tag={tag} />
+                <TagComponent key={index} index={index} tag={tag} saveHandler={this.saveHandler} />
               ))}
             </tbody>
           </Table>
+          <Button color="success">Save all new Tags</Button>
         </div>
       );
     }
