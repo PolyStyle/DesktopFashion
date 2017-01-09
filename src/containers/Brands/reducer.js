@@ -53,12 +53,12 @@ export default (state = {}, action) => {
     case TAGS_RECEIVED:
       return {
         ...state,
-        tags: action.data,
+        brands: action.data,
       };
     case ADD_TAG:
       return {
         ...state,
-        tags: state.tags.concat({ displayName: 'Test' }),
+        brands: state.brands.concat({ displayName: 'Test' }),
       };
     case TAGS_REQUESTED:
       return {

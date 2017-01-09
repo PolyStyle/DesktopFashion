@@ -27,6 +27,7 @@ export default function createReducer(asyncReducers) {
     home: (state = Map({})) => state,
     userInfo: (state = Map({})) => state,
     tags: (state = {}) => state,
+    brands: (state = {}) => state,
     ...asyncReducers,
   });
 }

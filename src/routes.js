@@ -53,6 +53,25 @@ export default function createRoutes(store) {
         },
       },
       {
+        path: '/brands',
+        getComponent(nextState, cb) {
+          const importModules = Promise.all([
+            System.import('./containers/Brands'),
+            System.import('./containers/Brands/reducer'),
+          ]);
+
+          const renderRoute = loadModule(cb);
+
+          importModules
+            .then(([Component, reducer]) => {
+              injectReducer(store, 'brands', reducer.default);
+
+              renderRoute(Component);
+            })
+            .catch(errorLoading);
+        },
+      },
+      {
         path: '/UserInfo/:id',
         getComponent(nextState, cb) {
           const importModules = Promise.all([

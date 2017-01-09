@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { Table, Button, Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import { connect } from 'react-redux';
-import TagComponent from './tagComponent';
+import BrandComponent from './brandComponent';
 import * as action from './action';
 
 
-class Tags extends Component {
+class Brands extends Component {
   // Fetching data method for both server/client side rendering
   static fetchData(dispatch) {
     return Promise.all([
@@ -49,7 +49,7 @@ class Tags extends Component {
   componentDidMount() {
     const { dispatch, params } = this.props;
     // Fetching data for client side rendering
-    Tags.fetchData(dispatch, params);
+    Brands.fetchData(dispatch, params);
   }
   componentWillReceiveProps(nextProps) {
     console.log('new PROPS');
@@ -57,7 +57,7 @@ class Tags extends Component {
   }
   addTagHandler() {
     const { dispatch } = this.props;
-    Tags.addTag(dispatch);
+    Brands.addTag(dispatch);
   }
 
   saveHandler(tag) {
@@ -66,10 +66,10 @@ class Tags extends Component {
     const id = tag.id;
     if (id) {
       // This is an existing tag, just update it.
-      Tags.updateTag(dispatch, id, newValue);
+      Brands.updateTag(dispatch, id, newValue);
     } else {
       // This is a new tag, create it.
-      Tags.createTag(dispatch, tag.index, newValue);
+      Brands.createTag(dispatch, tag.index, newValue);
     }
   }
 
@@ -78,20 +78,19 @@ class Tags extends Component {
     const id = tag.id;
     if (id) {
       // This is an existing tag, just update it.
-      Tags.deleteTag(dispatch, id, tag.index);
+      Brands.deleteTag(dispatch, id, tag.index);
     } else {
       // This is a new tag, create it.
-      Tags.removeTag(dispatch, tag.index);
+      Brands.removeTag(dispatch, tag.index);
     }
   }
 
   render() {
-    console.log(this.props);
-    if (this.props.tags) {
+    if (this.props.brands) {
       return (
         <div>
           <Breadcrumb>
-            <BreadcrumbItem active>Tags</BreadcrumbItem>
+            <BreadcrumbItem active>Brands</BreadcrumbItem>
             <BreadcrumbItem active>
               <Button color="success" onClick={this.addTagHandler} size="sm">Add Tags</Button>
             </BreadcrumbItem>
@@ -105,8 +104,8 @@ class Tags extends Component {
               </tr>
             </thead>
             <tbody>
-              {this.props.tags.map((tag, index) => (
-                <TagComponent
+              {this.props.brands.map((tag, index) => (
+                <BrandComponent
                   key={index}
                   index={index}
                   tag={tag}
@@ -123,12 +122,12 @@ class Tags extends Component {
   }
 }
 
-Tags.propTypes = {
+Brands.propTypes = {
   dispatch: PropTypes.func,
   params: PropTypes.objectOf(PropTypes.string),
-  tags: PropTypes.arrayOf(PropTypes.object),
+  brands: PropTypes.arrayOf(PropTypes.object),
 };
 
-const mapStateToProps = state => ({ tags: state.get('tags').tags });
+const mapStateToProps = state => ({ brands: state.get('brands').brands });
 
-export default connect(mapStateToProps)(Tags);
+export default connect(mapStateToProps)(Brands);
