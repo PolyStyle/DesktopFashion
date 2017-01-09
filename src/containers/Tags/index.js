@@ -17,6 +17,17 @@ class Tags extends Component {
       dispatch(action.addTag()),
     ]);
   }
+  static removeTag(dispatch, index) {
+    return Promise.all([
+      dispatch(action.removeTag(index)),
+    ]);
+  }
+  static deleteTag(dispatch, id, index) {
+    return Promise.all([
+      dispatch(action.deleteTag(id, index)),
+    ]);
+  }
+
   static updateTag(dispatch, id, value) {
     return Promise.all([
       dispatch(action.updateTag(id, value)),
@@ -32,6 +43,7 @@ class Tags extends Component {
     super();
     this.addTagHandler = this.addTagHandler.bind(this);
     this.saveHandler = this.saveHandler.bind(this);
+    this.deleteHandler = this.deleteHandler.bind(this);
   }
 
   componentDidMount() {
@@ -49,8 +61,6 @@ class Tags extends Component {
   }
 
   saveHandler(tag) {
-    console.log('TAG', tag);
-    console.log(this);
     const { dispatch } = this.props;
     const newValue = tag.tempValue;
     const id = tag.id;
@@ -60,6 +70,18 @@ class Tags extends Component {
     } else {
       // This is a new tag, create it.
       Tags.createTag(dispatch, tag.index, newValue);
+    }
+  }
+
+  deleteHandler(tag) {
+    const { dispatch } = this.props;
+    const id = tag.id;
+    if (id) {
+      // This is an existing tag, just update it.
+      Tags.deleteTag(dispatch, id, tag.index);
+    } else {
+      // This is a new tag, create it.
+      Tags.removeTag(dispatch, tag.index);
     }
   }
 
@@ -84,7 +106,13 @@ class Tags extends Component {
             </thead>
             <tbody>
               {this.props.tags.map((tag, index) => (
-                <TagComponent key={index} index={index} tag={tag} saveHandler={this.saveHandler} />
+                <TagComponent
+                  key={index}
+                  index={index}
+                  tag={tag}
+                  saveHandler={this.saveHandler}
+                  deleteHandler={this.deleteHandler}
+                />
               ))}
             </tbody>
           </Table>

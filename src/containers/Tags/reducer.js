@@ -6,13 +6,33 @@ import {
   ADD_TAG,
   UPDATE_TAG,
   CREATE_TAG,
+  REMOVE_TAG,
 } from './action';
 
 export default (state = {}, action) => {
   console.log(action.type);
   switch (action.type) {
-    case UPDATE_TAG:
-      return state;
+    case UPDATE_TAG: {
+      const tags = state.tags;
+      let currentIndex = -1;
+      let i = tags.length - 1;
+      for (; i >= 0; i -= 1) {
+        if (tags[i].id === action.id) {
+          currentIndex = i;
+        }
+      }
+      if (currentIndex === -1) {
+        return state;
+      }
+      return Object.assign({}, state, {
+        tags:
+        state.tags.slice(0, currentIndex)
+        .concat([{
+          displayName: action.value,
+        }])
+        .concat(state.tags.slice(currentIndex + 1)),
+      });
+    }
     case CREATE_TAG:
       return Object.assign({}, state, {
         tags:
@@ -23,6 +43,13 @@ export default (state = {}, action) => {
         }])
         .concat(state.tags.slice(action.index + 1)),
       });
+    case REMOVE_TAG: {
+      return Object.assign({}, state, {
+        tags:
+        state.tags.slice(0, action.index)
+        .concat(state.tags.slice(action.index + 1)),
+      });
+    }
     case TAGS_RECEIVED:
       return {
         ...state,
