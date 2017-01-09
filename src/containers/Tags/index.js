@@ -96,12 +96,12 @@ class Tags extends Component {
               <Button color="success" onClick={this.addTagHandler} size="sm">Add Tags</Button>
             </BreadcrumbItem>
           </Breadcrumb>
-          <Table striped>
+          <Table striped size="sm">
             <thead>
               <tr>
-                <th>id</th>
-                <th>title</th>
-                <th>edits</th>
+                <th width="15%">id</th>
+                <th width="50%">title</th>
+                <th width="35%">edits</th>
               </tr>
             </thead>
             <tbody>

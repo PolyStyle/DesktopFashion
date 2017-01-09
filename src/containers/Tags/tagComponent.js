@@ -68,7 +68,7 @@ class TagComponent extends React.Component {
         <td>
           {!this.state.isEdited && this.state.value}
           {this.state.isEdited &&
-            <Input type="text" placeholder={this.state.value} value={this.state.tempValue} onChange={this.handleChange} />}
+            <Input type="text" size="sm" placeholder={this.state.value} value={this.state.tempValue} onChange={this.handleChange} />}
         </td>
         <td>
           {!this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleEdit} color="primary" size="sm">Edit</Button>}
