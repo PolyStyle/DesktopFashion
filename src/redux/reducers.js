@@ -1,7 +1,7 @@
 /* eslint new-cap:0 */
 
 import { combineReducers } from 'redux-immutable';
-import { Map, fromJS } from 'immutable';
+import { fromJS } from 'immutable';
 import { LOCATION_CHANGE } from 'react-router-redux';
 
 // Initial routing state
@@ -24,10 +24,11 @@ export default function createReducer(asyncReducers) {
   return combineReducers({
     routing,
     // Register the inital async reducers, otherwise you will get the warning of Redux
-    home: (state = Map({})) => state,
-    userInfo: (state = Map({})) => state,
+    home: (state = {}) => state,
+    userInfo: (state = {}) => state,
     tags: (state = {}) => state,
     brands: (state = {}) => state,
+    products: (state = {}) => state,
     ...asyncReducers,
   });
 }

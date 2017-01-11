@@ -51,6 +51,7 @@ export default (state = {}, action) => {
       });
     }
     case TAGS_RECEIVED:
+      console.log('loaded tags');
       return {
         ...state,
         tags: action.data,
