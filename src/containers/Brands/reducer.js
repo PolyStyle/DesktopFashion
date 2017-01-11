@@ -1,74 +1,71 @@
 import { fromJS } from 'immutable';
 import {
-  TAGS_RECEIVED,
-  TAGS_REQUESTED,
-  TAGS_FAIL,
-  ADD_TAG,
-  UPDATE_TAG,
-  CREATE_TAG,
-  REMOVE_TAG,
+  BRANDS_RECEIVED,
+  BRANDS_REQUESTED,
+  BRANDS_FAIL,
+  ADD_BRAND,
+  UPDATE_BRAND,
+  CREATE_BRAND,
+  REMOVE_BRAND,
 } from './action';
 
 export default (state = {}, action) => {
   console.log(action.type);
   switch (action.type) {
-    case UPDATE_TAG: {
-      const tags = state.tags;
+    case UPDATE_BRAND: {
+      console.log('received the redux call');
+      const brands = state.brands;
       let currentIndex = -1;
-      let i = tags.length - 1;
+      let i = brands.length - 1;
       for (; i >= 0; i -= 1) {
-        if (tags[i].id === action.id) {
+        if (brands[i].id === action.id) {
           currentIndex = i;
         }
       }
+      console.log('REDUX ', currentIndex);
       if (currentIndex === -1) {
         return state;
       }
       return Object.assign({}, state, {
-        tags:
-        state.tags.slice(0, currentIndex)
-        .concat([{
-          displayName: action.value,
-        }])
-        .concat(state.tags.slice(currentIndex + 1)),
+        brands:
+        state.brands.slice(0, currentIndex)
+        .concat([action.newBrand])
+        .concat(state.brands.slice(currentIndex + 1)),
       });
     }
-    case CREATE_TAG:
+    case CREATE_BRAND:
       return Object.assign({}, state, {
-        tags:
-        state.tags.slice(0, action.index)
-        .concat([{
-          displayName: action.value,
-          id: action.id,
-        }])
-        .concat(state.tags.slice(action.index + 1)),
+        brands:
+        state.brands.slice(0, action.index)
+        .concat([action.newBrand])
+        .concat(state.brands.slice(action.index + 1)),
       });
-    case REMOVE_TAG: {
+    case REMOVE_BRAND: {
       return Object.assign({}, state, {
-        tags:
-        state.tags.slice(0, action.index)
-        .concat(state.tags.slice(action.index + 1)),
+        brands:
+        state.brands.slice(0, action.index)
+        .concat(state.brands.slice(action.index + 1)),
       });
     }
-    case TAGS_RECEIVED:
+    case BRANDS_RECEIVED:
       return {
         ...state,
         brands: action.data,
       };
-    case ADD_TAG:
+    case ADD_BRAND:
       return {
         ...state,
         brands: state.brands.concat({ displayName: 'Test' }),
       };
-    case TAGS_REQUESTED:
+    case BRANDS_REQUESTED:
       return {
         ...state,
-        readyState: TAGS_REQUESTED,
+        readyState: BRANDS_REQUESTED,
       };
-    case TAGS_FAIL:
+    case BRANDS_FAIL:
       return {
         ...state,
-        readyState: TAGS_FAIL,
+        readyState: BRANDS_FAIL,
         err: fromJS(action.err),
       };
     default:

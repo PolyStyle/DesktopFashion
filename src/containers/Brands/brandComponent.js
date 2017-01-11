@@ -1,17 +1,21 @@
 import React, { PropTypes } from 'react';
 import { Button, Input, Badge } from 'reactstrap';
+import styles from './styles.css';
 
-class TagComponent extends React.Component {
+class BrandComponent extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       isEdited: false,
-      value: props.tag.displayName,
+      brand: {
+        ...props.brand,
+        tempValues: {
+          ...props.brand,
+        },
+        index: props.index,
+      },
       index: props.index,
-      id: props.tag.id,
-      tempValue: props.tag.displayName,
       isDeleting: false,
     };
     this.handleEdit = this.handleEdit.bind(this);
@@ -20,60 +24,98 @@ class TagComponent extends React.Component {
     this.handleAttemptDelete = this.handleAttemptDelete.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
+    this.handleDeepEdit = this.handleDeepEdit.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      id: nextProps.tag.id,
+      ...nextProps,
+      brand: {
+        ...nextProps.brand,
+        tempValues: nextProps.brand,
+        index: nextProps.index,
+      },
+      index: nextProps.index,
     });
   }
 
   // GOOD: toggle this.state.isActive on click
   handleEdit() {
-    this.setState({ isEdited: true });
+    this.setState({
+      ...this.state,
+      isEdited: true,
+    });
+    console.log(this.state);
   }
 
   handleChange(event) {
-    this.setState({ tempValue: event.target.value });
+    this.setState({
+      brand: {
+        ...this.state.brand,
+        index: this.props.index,
+        tempValues: {
+          ...this.state.brand.tempValues,
+          [event.target.name]: event.target.value,
+        },
+      },
+    });
   }
 
-  handleSave(event) {
-    console.log(event.target.value);
+  handleSave() {
     this.setState({
-      value: this.state.tempValue,
+      ...this.state,
       isEdited: false,
-    }, this.props.saveHandler(this.state));
+      isDeleting: false,
+    });
+    this.props.saveHandler(this.state.brand);
   }
   handleCancel() {
     this.setState({
+      ...this.state,
       isEdited: false,
       isDeleting: false,
     });
   }
   handleAttemptDelete() {
     this.setState({
+      ...this.state,
       isDeleting: true,
     });
   }
 
   handleDelete() {
-    this.props.deleteHandler(this.state);
+    this.props.deleteHandler(this.state.brand);
+  }
+
+  handleDeepEdit() {
+    this.props.deepEditHandler(this.state.brand);
   }
 
   render() {
     // use the classSet addon to concat an array of class names together
     return (
       <tr>
-        <th scope="row">{this.props.tag.id || <Badge color="default" pill>new</Badge>}</th>
+        <th scope="row">{this.props.brand.id || <Badge color="default" pill>new</Badge>}</th>
         <td>
-          {!this.state.isEdited && this.state.value}
-          {this.state.isEdited &&
-            <Input type="text" size="sm" placeholder={this.state.value} value={this.state.tempValue} onChange={this.handleChange} />}
+          <img className={styles.avatarSmall} src={this.props.brand.picture} alt="Brand Logo" />
         </td>
         <td>
-          {!this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleEdit} color="primary" size="sm">Edit</Button>}
+          {!this.state.isEdited && this.state.brand.displayName}
+          {this.state.isEdited &&
+            <Input
+              name="displayName"
+              type="text"
+              size="sm"
+              placeholder={this.state.brand.displayName}
+              value={this.state.brand.tempValues.displayName}
+              onChange={this.handleChange}
+            />}
+        </td>
+        <td>
+          {!this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleDeepEdit} color="info" size="sm">Edit</Button>}
+          {!this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleEdit} color="primary" size="sm">Quick Edit</Button>}
           {this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleCancel} color="secondary" size="sm">Cancel</Button>}
-          {!this.state.isEdited && !this.props.tag.id && <Button onClick={this.handleSave} color="success" size="sm">Save</Button>}
+          {!this.state.isEdited && !this.props.brand.id && <Button onClick={this.handleSave} color="success" size="sm">Save</Button>}
           {this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleSave} color="success" size="sm">Save</Button>}
           {this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleAttemptDelete} color="danger" size="sm">Delete</Button>}
           {this.state.isDeleting && <Button onClick={this.handleCancel} color="warning" size="sm"> Cancel </Button>}
@@ -84,14 +126,16 @@ class TagComponent extends React.Component {
   }
 }
 
-TagComponent.propTypes = {
-  tag: PropTypes.shape({
+BrandComponent.propTypes = {
+  brand: PropTypes.shape({
     id: PropTypes.number,
     displayName: PropTypes.string,
+    picture: PropTypes.string,
   }),
   index: PropTypes.number,
   saveHandler: PropTypes.func,
   deleteHandler: PropTypes.func,
+  deepEditHandler: PropTypes.func,
 };
 
-export default TagComponent;
+export default BrandComponent;

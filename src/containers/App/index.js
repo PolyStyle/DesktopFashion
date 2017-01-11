@@ -13,9 +13,9 @@ const App = ({ children }) => (
       <h1>{config.app.title}</h1>
       <ul className={styles.menu} >
         <li><Link to={'/tags'}>Tags</Link></li>
-        <li><Link to={'brands/'}>Brands</Link></li>
-        <li><Link to={'products/'}>Products</Link></li>
-        <li><Link to={'posts/'}>Posts</Link></li>
+        <li><Link to={'/brands'}>Brands</Link></li>
+        <li><Link to={'/products'}>Products</Link></li>
+        <li><Link to={'/posts'}>Posts</Link></li>
       </ul>
     </div>
     {children}

@@ -1,73 +1,81 @@
-export const TAGS_REQUESTED = 'TAGS_REQUESTED';
-export const TAGS_FAIL = 'TAGS_FAIL';
-export const TAGS_RECEIVED = 'TAGS_RECEIVED';
-export const ADD_TAG = 'ADD_TAG';
-export const UPDATE_TAG = 'UPDATE_TAG';
-export const CREATE_TAG = 'CREATE_TAG';
-export const REMOVE_TAG = 'REMOVE_TAG';
+export const BRANDS_REQUESTED = 'BRANDS_REQUESTED';
+export const BRANDS_FAIL = 'BRANDS_FAIL';
+export const BRANDS_RECEIVED = 'BRANDS_RECEIVED';
+export const ADD_BRAND = 'ADD_BRAND';
+export const UPDATE_BRAND = 'UPDATE_BRAND';
+export const CREATE_BRAND = 'CREATE_BRAND';
+export const REMOVE_BRAND = 'REMOVE_BRAND';
 
-const API_URL = 'http://localhost:3000/tags/';
+const API_URL = 'http://localhost:3000/brands/';
 
 // Export this function for testing
 export const fetchData = axios => (dispatch) => {
-  dispatch({ type: TAGS_REQUESTED });
+  dispatch({ type: BRANDS_REQUESTED });
 
   return axios.get(API_URL)
     .then((res) => {
-      dispatch({ type: TAGS_RECEIVED, data: res.data });
+      dispatch({ type: BRANDS_RECEIVED, data: res.data });
     })
     .catch((err) => {
-      dispatch({ type: TAGS_FAIL, err });
+      dispatch({ type: BRANDS_FAIL, err });
     });
 };
 
 /* istanbul ignore next */
-export const addTag = () => (dispatch) => {
-  dispatch({ type: ADD_TAG });
+export const addBrand = () => (dispatch) => {
+  dispatch({ type: ADD_BRAND });
 };
 
-export const updateTag = (id, value) => (dispatch, getState, axios) => {
+export const updateBrand = newBrand => (dispatch, getState, axios) => {
+  console.log('receiving the brand action', newBrand);
+  const id = newBrand.id;
   const endPoint = API_URL + id;
-  return axios.put(endPoint, {
-    displayName: value,
-  })
+  return axios.put(endPoint, newBrand)
   .then(() => {
-    console.log('EDITED TAG');
-    dispatch({ type: UPDATE_TAG, id, value });
+    console.log('it went well!');
+    dispatch({ type: UPDATE_BRAND, id, newBrand });
   })
   .catch((err) => {
+    console.log('there was an error');
     console.log(err);
-    dispatch({ type: TAGS_FAIL, err });
+    dispatch({ type: BRANDS_FAIL, err });
   });
 };
 
-export const createTag = (index, value) => (dispatch, getState, axios) => {
-  axios.post(API_URL, {
-    displayName: value,
-  })
+export const createBrand = (index, newBrand) => (dispatch, getState, axios) => {
+  console.log('Create a brand');
+  console.log(newBrand, index);
+  return axios.post(API_URL, newBrand)
   .then((res) => {
-    dispatch({ type: CREATE_TAG, id: res.data.id, index, value });
+    console.log('DONE, now lets update');
+    dispatch({
+      type: CREATE_BRAND,
+      id: res.data.id,
+      index,
+      newBrand: { ...newBrand, id: res.data.id },
+    });
   })
   .catch((err) => {
     console.log(err);
-    dispatch({ type: TAGS_FAIL, err });
+    dispatch({ type: BRANDS_FAIL, err });
   });
 };
 
-export const deleteTag = (id, index) => (dispatch, getState, axios) => {
+export const deleteBrand = (id, index) => (dispatch, getState, axios) => {
+  console.log('action received delete brand invoked');
   const endPoint = API_URL + id;
   return axios.delete(endPoint)
   .then(() => {
-    dispatch({ type: REMOVE_TAG, index });
+    dispatch({ type: REMOVE_BRAND, index });
   })
   .catch((err) => {
     console.log(err);
-    dispatch({ type: TAGS_FAIL, err });
+    dispatch({ type: BRANDS_FAIL, err });
   });
 };
 
-export const removeTag = index => (dispatch) => {
-  dispatch({ type: REMOVE_TAG, index });
+export const removeBrand = index => (dispatch) => {
+  dispatch({ type: REMOVE_BRAND, index });
 };
 /* istanbul ignore next */
 export const fetchDataIfNeeded = () => (dispatch, getState, axios) => {
