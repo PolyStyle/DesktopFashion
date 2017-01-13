@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Table, Button, Breadcrumb, BreadcrumbItem, Card, CardBlock,
-  Input, Modal, ModalHeader, ModalBody } from 'reactstrap';
+  Input, Modal, ModalBody } from 'reactstrap';
 import { connect } from 'react-redux';
 import ProductComponent from './productComponent';
 import * as action from './action';
@@ -47,6 +47,7 @@ class Products extends Component {
   constructor() {
     super();
     this.state = {
+      isTagModalOpen: false,
       isEdited: false,
       isPictureInModalExpanded: false,
     };
@@ -59,6 +60,9 @@ class Products extends Component {
     this.saveDetailedHandler = this.saveDetailedHandler.bind(this);
     this.expandPictureInModal = this.expandPictureInModal.bind(this);
     this.removeTag = this.removeTag.bind(this);
+    this.addTag = this.addTag.bind(this);
+    this.toggleEditModal = this.toggleEditModal.bind(this);
+    this.toggleTagModal = this.toggleTagModal.bind(this);
   }
 
   componentDidMount() {
@@ -126,6 +130,9 @@ class Products extends Component {
       // This is a new Product, create it.
       Products.createProduct(dispatch, index, newProduct);
     }
+    this.setState({
+      isEdited: !this.state.isEdited,
+    });
   }
 
   deleteHandler(product) {
@@ -168,6 +175,18 @@ class Products extends Component {
       isEdited: false,
     });
   }
+
+  toggleEditModal() {
+    this.setState({
+      isEdited: !this.state.isEdited,
+    });
+  }
+  toggleTagModal() {
+    this.setState({
+      isTagModalOpen: !this.state.isTagModalOpen,
+    });
+  }
+
   expandPictureInModal() {
     console.log(this.state.isPictureInModalExpanded);
     this.setState({
@@ -189,6 +208,28 @@ class Products extends Component {
       },
     });
   }
+
+  addTag(tag) {
+    console.log('attempt to add tag ', tag);
+    let found = false;
+    // check if tag exists already
+    for (let i = 0; i < this.state.currentProduct.tempValues.Tags.length; i += 1) {
+      if (this.state.currentProduct.tempValues.Tags[i].id === tag.id) {
+        found = true;
+      }
+    }
+    if (!found) {
+      this.setState({
+        currentProduct: {
+          ...this.state.currentProduct,
+          tempValues: {
+            ...this.state.currentProduct.tempValues,
+            Tags: this.state.currentProduct.tempValues.Tags.concat([tag]),
+          },
+        },
+      });
+    }
+  }
   render() {
     if (this.props.products) {
       return (
@@ -199,7 +240,7 @@ class Products extends Component {
               <Button color="success" onClick={this.addProductHandler} size="sm">Add Product</Button>
             </BreadcrumbItem>
           </Breadcrumb>
-          <Modal isOpen={this.state.isEdited} toggle={this.expandPictureInModal}>
+          <Modal isOpen={this.state.isEdited} toggle={this.toggleEditModal}>
             {this.state.isEdited &&
               <Card>
                 <Button size="sm" onClick={this.expandPictureInModal}>Expand Image</Button>
@@ -210,7 +251,7 @@ class Products extends Component {
                     type="text"
                     size="sm"
                     placeholder={this.state.currentProduct.displayName}
-                    value={this.state.currentProduct.tempValues.displayName}
+                    value={this.state.currentProduct.tempValues.displayName || ''}
                     onChange={this.handleChange}
                     name="displayName"
                   />
@@ -219,7 +260,7 @@ class Products extends Component {
                     size="sm"
                     type="text"
                     placeholder={this.state.currentProduct.productCode}
-                    value={this.state.currentProduct.tempValues.productCode}
+                    value={this.state.currentProduct.tempValues.productCode || ''}
                     name="productCode"
                     onChange={this.handleChange}
                   />
@@ -230,7 +271,7 @@ class Products extends Component {
                     x {tag.displayName}
                     </Button>
                   ))}
-                  <Button size="sm" color="success"> Add Tag </Button>
+                  <Button size="sm" color="success" onClick={this.toggleTagModal}> Add Tag </Button>
                   <br />
                   <span> Avatar </span>
                   <Input
@@ -245,14 +286,17 @@ class Products extends Component {
                   <br />
                   <Button onClick={this.handleCancel} color="warning" size="sm">Cancel</Button>
                   <Button onClick={this.saveDetailedHandler} color="success" size="sm">Save</Button>
-                  <Modal isOpen={this.state.isEdited}>
-                    <ModalHeader>Nested Modal title</ModalHeader>
+                  <Modal isOpen={this.state.isTagModalOpen} toggle={this.toggleTagModal}>
                     <ModalBody>
                       {this.props.tags.map((tag, index) => (
-                        <Button key={index} size="sm" color="secondary" onClick={() => this.removeTag(index)}>
-                        x {tag.displayName}
+                        <Button key={index} size="sm" color="secondary" onClick={() => this.addTag(tag)}>
+                        + {tag.displayName}
                         </Button>
                       ))}
+                      <br />
+                      <Button size="sm" color="danger" onClick={this.toggleTagModal}>
+                        Close
+                      </Button>
                     </ModalBody>
                   </Modal>
                 </CardBlock>
@@ -298,7 +342,7 @@ Products.propTypes = {
 };
 
 const mapStateToProps = state => (
-  { products: state.get('products').products, tags: state.get('tags').tags }
+  { products: state.get('products').products, tags: state.get('products').tags }
 );
 
 export default connect(mapStateToProps)(Products);

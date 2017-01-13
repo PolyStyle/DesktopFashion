@@ -34,6 +34,44 @@ export default function createRoutes(store) {
         },
       },
       {
+        path: '/UserInfo/:id',
+        getComponent(nextState, cb) {
+          const importModules = Promise.all([
+            System.import('./containers/UserInfo'),
+            System.import('./containers/UserInfo/reducer'),
+          ]);
+
+          const renderRoute = loadModule(cb);
+
+          importModules
+            .then(([Component, reducer]) => {
+              injectReducer(store, 'userInfo', reducer.default);
+
+              renderRoute(Component);
+            })
+            .catch(errorLoading);
+        },
+      },
+      {
+        path: '/products',
+        getComponent(nextState, cb) {
+          const importModules = Promise.all([
+            System.import('./containers/Products'),
+            System.import('./containers/Products/reducer'),
+          ]);
+
+          const renderRoute = loadModule(cb);
+
+          importModules
+            .then(([Component, reducer]) => {
+              injectReducer(store, 'products', reducer.default);
+
+              renderRoute(Component);
+            })
+            .catch(errorLoading);
+        },
+      },
+      {
         path: '/tags',
         getComponent(nextState, cb) {
           const importModules = Promise.all([
@@ -65,45 +103,6 @@ export default function createRoutes(store) {
           importModules
             .then(([Component, reducer]) => {
               injectReducer(store, 'brands', reducer.default);
-
-              renderRoute(Component);
-            })
-            .catch(errorLoading);
-        },
-      },
-      {
-        path: '/products',
-        getComponent(nextState, cb) {
-          const importModules = Promise.all([
-            System.import('./containers/Products'),
-            System.import('./containers/Products/reducer'),
-            System.import('./containers/Tags/reducer'),
-          ]);
-
-          const renderRoute = loadModule(cb);
-
-          importModules
-            .then(([Component, reducer]) => {
-              injectReducer(store, 'products', reducer.default);
-
-              renderRoute(Component);
-            })
-            .catch(errorLoading);
-        },
-      },
-      {
-        path: '/UserInfo/:id',
-        getComponent(nextState, cb) {
-          const importModules = Promise.all([
-            System.import('./containers/UserInfo'),
-            System.import('./containers/UserInfo/reducer'),
-          ]);
-
-          const renderRoute = loadModule(cb);
-
-          importModules
-            .then(([Component, reducer]) => {
-              injectReducer(store, 'userInfo', reducer.default);
 
               renderRoute(Component);
             })

@@ -115,7 +115,7 @@ class ProductComponent extends React.Component {
           {this.state.isEdited &&
             <Dropdown group isOpen={this.state.dropdownBrandOpen} size="sm" toggle={this.toggleBrandDropDown}>
               <DropdownToggle caret>
-                {this.props.product.Brand.displayName}
+                {this.props.product.Brand.displayName || 'None'}
               </DropdownToggle>
               <DropdownMenu>
                 {this.props.brands.map(brand => (
@@ -123,16 +123,10 @@ class ProductComponent extends React.Component {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            }
+          }
         </td>
         <td>
-          {!this.state.isEdited && this.props.product.Tags.map((tag, index) => (
-            <span key={index} className={styles.tagLabel}>{tag.displayName}</span>
-          ))}
-          {this.state.isEdited && this.props.product.Tags.map((tag, index) => (
-            <span key={index} className={styles.tagLabelEdit}>x {tag.displayName}</span>
-          ))}
-          {this.state.isEdited && <span className={styles.tagLabelAdd}> Add Tag </span>}
+          Tags
         </td>
         <td>
           {!this.state.isEdited && this.state.product.displayName}
@@ -177,6 +171,6 @@ ProductComponent.propTypes = {
   // tags: PropTypes.arrayOf(PropTypes.object),
 };
 
-const mapStateToProps = state => ({ tags: state.get('tags').tags, brands: state.get('brands').brands });
+const mapStateToProps = state => ({ brands: state.get('brands').brands });
 
 export default connect(mapStateToProps)(ProductComponent);

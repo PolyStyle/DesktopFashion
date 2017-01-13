@@ -58,7 +58,11 @@ export default (state = {}, action) => {
     case ADD_PRODUCT:
       return {
         ...state,
-        products: state.products.concat({ displayName: 'Test' }),
+        products: state.products.concat({
+          display: ' test',
+          picture: 'https://kickz.akamaized.net/en/media/images/p/600/nike-W_INTERNATIONALIST_PRM-CL_GREY_ANTHRCT_PR_PLTNM_WHITE-1.jpg',
+          Tags: [],
+        }),
       };
     case PRODUCTS_REQUESTED:
       return {

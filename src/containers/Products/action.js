@@ -27,6 +27,7 @@ export const addProduct = () => (dispatch) => {
 };
 
 export const updateProduct = newProduct => (dispatch, getState, axios) => {
+  console.log('new product :', newProduct);
   const id = newProduct.id;
   const endPoint = API_URL + id;
   return axios.put(endPoint, newProduct)
