@@ -58,14 +58,17 @@ export default function createRoutes(store) {
           const importModules = Promise.all([
             System.import('./containers/Products'),
             System.import('./containers/Products/reducer'),
+            System.import('./containers/Tags/reducer'),
           ]);
 
           const renderRoute = loadModule(cb);
 
           importModules
-            .then(([Component, reducer]) => {
-              injectReducer(store, 'products', reducer.default);
-
+            .then(([Component, ...reducers]) => {
+              console.log('reducer');
+              console.log(reducers);
+              injectReducer(store, 'products', reducers[0].default);
+              injectReducer(store, 'tags', reducers[1].default);
               renderRoute(Component);
             })
             .catch(errorLoading);

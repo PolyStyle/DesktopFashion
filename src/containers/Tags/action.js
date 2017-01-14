@@ -10,12 +10,10 @@ const API_URL = 'http://localhost:3000/tags/';
 
 // Export this function for testing
 export const fetchData = axios => (dispatch) => {
-  console.log('=======');
-  console.log(dispatch);
   dispatch({ type: TAGS_REQUESTED });
+
   return axios.get(API_URL)
     .then((res) => {
-      console.log('received tags');
       dispatch({ type: TAGS_RECEIVED, data: res.data });
     })
     .catch((err) => {

@@ -1,4 +1,4 @@
-import { fromJS } from 'immutable';
+import { Map, fromJS } from 'immutable';
 import {
   TAGS_RECEIVED,
   TAGS_REQUESTED,
@@ -9,8 +9,11 @@ import {
   REMOVE_TAG,
 } from './action';
 
-export default (state = {}, action) => {
-  console.log(action.type);
+const initialState = Map({
+  tags: [],
+});
+
+export default (state = initialState, action) => {
   switch (action.type) {
     case UPDATE_TAG: {
       const tags = state.tags;
@@ -51,7 +54,7 @@ export default (state = {}, action) => {
       });
     }
     case TAGS_RECEIVED:
-      console.log('loaded tags');
+      console.log('Ive received  tags ----------');
       return {
         ...state,
         tags: action.data,
@@ -64,12 +67,10 @@ export default (state = {}, action) => {
     case TAGS_REQUESTED:
       return {
         ...state,
-        readyState: TAGS_REQUESTED,
       };
     case TAGS_FAIL:
       return {
         ...state,
-        readyState: TAGS_FAIL,
         err: fromJS(action.err),
       };
     default:

@@ -10,8 +10,6 @@ import styles from './styles.css';
 class Products extends Component {
   // Fetching data method for both server/client side rendering
   static fetchData(dispatch) {
-    console.log('dispatch from product ', dispatch);
-    console.log('get state', this);
     return Promise.all([
       dispatch(action.fetchDataIfNeeded()),
       dispatch(actionTags.fetchDataIfNeeded()),
@@ -72,8 +70,6 @@ class Products extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('new props');
-    console.log(nextProps);
     if (this.state.isEdited) {
       const id = this.state.currentProduct.id;
       let product = null;
@@ -87,7 +83,6 @@ class Products extends Component {
         return;
       }
 
-      console.log('Next Props', nextProps);
       this.setState({
         currentProduct: {
           ...product,
@@ -341,8 +336,11 @@ Products.propTypes = {
   tags: PropTypes.arrayOf(PropTypes.object),
 };
 
-const mapStateToProps = state => (
-  { products: state.get('products').products, tags: state.get('products').tags }
-);
+const mapStateToProps = (state) => {
+  console.log('STATE 0------');
+  console.log(state.get('products'));
+  console.log(state.get('tags'));
+  return { products: state.get('products').products, tags: state.get('tags').tags };
+};
 
 export default connect(mapStateToProps)(Products);

@@ -49,7 +49,9 @@ class ProductComponent extends React.Component {
       ...this.state,
       isEdited: true,
     });
-    console.log(this.state);
+    console.log('----state from component- ---');
+    console.log(this.state.product.Tags);
+    console.log(this.props.product.Tags);
   }
 
   handleChange(event) {
@@ -118,15 +120,19 @@ class ProductComponent extends React.Component {
                 {this.props.product.Brand.displayName || 'None'}
               </DropdownToggle>
               <DropdownMenu>
-                {this.props.brands.map(brand => (
-                  <DropdownItem>{brand.displayName}</DropdownItem>
-                ))}
+                <DropdownItem>BRAND</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           }
         </td>
         <td>
-          Tags
+          {!this.state.isEdited && this.state.product.Tags.map((tag, index) => (
+            <span key={index} className={styles.tagLabel}>{tag.displayName}</span>
+          ))}
+          {this.state.isEdited && this.state.product.Tags.map((tag, index) => (
+            <span key={index} className={styles.tagLabelEdit}>x {tag.displayName}</span>
+          ))}
+          {this.state.isEdited && <span className={styles.tagLabelAdd}> Add Tag </span>}
         </td>
         <td>
           {!this.state.isEdited && this.state.product.displayName}
@@ -167,10 +173,9 @@ ProductComponent.propTypes = {
   saveHandler: PropTypes.func,
   deleteHandler: PropTypes.func,
   deepEditHandler: PropTypes.func,
-  brands: PropTypes.arrayOf(PropTypes.object),
   // tags: PropTypes.arrayOf(PropTypes.object),
 };
 
-const mapStateToProps = state => ({ brands: state.get('brands').brands });
+const mapStateToProps = (state) => { console.log(state); };
 
 export default connect(mapStateToProps)(ProductComponent);

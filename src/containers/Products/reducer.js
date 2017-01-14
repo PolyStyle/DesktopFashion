@@ -1,4 +1,4 @@
-import { fromJS } from 'immutable';
+import { Map, fromJS } from 'immutable';
 import {
   PRODUCTS_RECEIVED,
   PRODUCTS_REQUESTED,
@@ -8,15 +8,15 @@ import {
   CREATE_PRODUCT,
   REMOVE_PRODUCT,
 } from './action';
-import {
-  TAGS_RECEIVED,
-} from './../Tags/action';
 
-export default (state = {}, action) => {
-  console.log(action.type);
+const initialState = Map({
+  products: [],
+});
+
+
+export default (state = initialState, action) => {
   switch (action.type) {
     case UPDATE_PRODUCT: {
-      console.log('received the redux call');
       const products = state.products;
       let currentIndex = -1;
       let i = products.length - 1;
@@ -25,11 +25,12 @@ export default (state = {}, action) => {
           currentIndex = i;
         }
       }
-      console.log('REDUX ', currentIndex);
+
       if (currentIndex === -1) {
         return state;
       }
-      return Object.assign({}, state, {
+
+      return state.merge({
         products:
         state.products.slice(0, currentIndex)
         .concat([action.newProduct])
@@ -67,18 +68,11 @@ export default (state = {}, action) => {
     case PRODUCTS_REQUESTED:
       return {
         ...state,
-        readyState: PRODUCTS_REQUESTED,
       };
     case PRODUCTS_FAIL:
       return {
         ...state,
-        readyState: PRODUCTS_FAIL,
         err: fromJS(action.err),
-      };
-    case TAGS_RECEIVED:
-      return {
-        ...state,
-        tags: action.data,
       };
     default:
       return state;

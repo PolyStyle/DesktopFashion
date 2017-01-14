@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Table, Button, Breadcrumb, BreadcrumbItem, Card, CardBlock,
-  Input, Modal } from 'reactstrap';
+  Container, Row, Col, Input } from 'reactstrap';
 import { connect } from 'react-redux';
 import BrandComponent from './brandComponent';
 import * as action from './action';
@@ -171,51 +171,55 @@ class Brands extends Component {
               <Button color="success" onClick={this.addBrandHandler} size="sm">Add Brand</Button>
             </BreadcrumbItem>
           </Breadcrumb>
-          <Modal isOpen={this.state.isEdited}>
-            {this.state.isEdited &&
-              <Card>
-                <div
-                  className={styles.backgroundHeader}
-                  style={{ backgroundImage: `url(${this.state.currentBrand.headerBackground})` }}
-                >
-                  <img className={styles.avatar} src={this.state.currentBrand.picture} alt="Brand Logo" />
-                </div>
-                <CardBlock>
-                  <span> Display Name </span>
-                  <Input
-                    type="text"
-                    size="sm"
-                    placeholder={this.state.currentBrand.displayName}
-                    value={this.state.currentBrand.tempValues.displayName}
-                    onChange={this.handleChange}
-                    name="displayName"
-                  />
-                  <span> Background Header </span>
-                  <Input
-                    size="sm"
-                    type="text"
-                    placeholder={this.state.currentBrand.headerBackground}
-                    value={this.state.currentBrand.tempValues.headerBackground}
-                    name="headerBackground"
-                    onChange={this.handleChange}
-                  />
-                  <span> Avatar </span>
-                  <Input
-                    size="sm"
-                    type="text"
-                    placeholder={this.state.currentBrand.picture}
-                    value={this.state.currentBrand.tempValues.picture}
-                    label="Picture (avatar)"
-                    name="picture"
-                    onChange={this.handleChange}
-                  />
-                  <br />
-                  <Button onClick={this.handleCancel} color="warning" size="sm">Cancel</Button>
-                  <Button onClick={this.saveDetailedHandler} color="success" size="sm">Save</Button>
-                </CardBlock>
-              </Card>
-            }
-          </Modal>
+          {this.state.isEdited &&
+            <Container>
+              <Row>
+                <Col sm={{ size: 8, push: 1, pull: 1, offset: 1 }}>
+                  <Card>
+                    <div
+                      className={styles.backgroundHeader}
+                      style={{ backgroundImage: `url(${this.state.currentBrand.headerBackground})` }}
+                    >
+                      <img className={styles.avatar} src={this.state.currentBrand.picture} alt="Brand Logo" />
+                    </div>
+                    <CardBlock>
+                      <span> Display Name </span>
+                      <Input
+                        type="text"
+                        size="sm"
+                        placeholder={this.state.currentBrand.displayName}
+                        value={this.state.currentBrand.tempValues.displayName}
+                        onChange={this.handleChange}
+                        name="displayName"
+                      />
+                      <span> Background Header </span>
+                      <Input
+                        size="sm"
+                        type="text"
+                        placeholder={this.state.currentBrand.headerBackground}
+                        value={this.state.currentBrand.tempValues.headerBackground}
+                        name="headerBackground"
+                        onChange={this.handleChange}
+                      />
+                      <span> Avatar </span>
+                      <Input
+                        size="sm"
+                        type="text"
+                        placeholder={this.state.currentBrand.picture}
+                        value={this.state.currentBrand.tempValues.picture}
+                        label="Picture (avatar)"
+                        name="picture"
+                        onChange={this.handleChange}
+                      />
+                      <br />
+                      <Button onClick={this.handleCancel} color="warning" size="sm">Cancel</Button>
+                      <Button onClick={this.saveDetailedHandler} color="success" size="sm">Save</Button>
+                    </CardBlock>
+                  </Card>
+                </Col>
+              </Row>
+            </Container>
+          }
           <Table striped size="sm">
             <thead>
               <tr>
