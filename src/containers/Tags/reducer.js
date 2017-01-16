@@ -54,7 +54,6 @@ export default (state = initialState, action) => {
       });
     }
     case TAGS_RECEIVED:
-      console.log('Ive received  tags ----------');
       return {
         ...state,
         tags: action.data,

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
-import { Button, Input, Badge, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { connect } from 'react-redux';
+import { Button, Input, Badge } from 'reactstrap';
+import SelectBrandComponent from './../Brands/selectBrandComponent';
 import styles from './styles.css';
 
 
@@ -115,14 +115,10 @@ class ProductComponent extends React.Component {
         <td>
           {!this.state.isEdited && this.props.product.Brand.displayName}
           {this.state.isEdited &&
-            <Dropdown group isOpen={this.state.dropdownBrandOpen} size="sm" toggle={this.toggleBrandDropDown}>
-              <DropdownToggle caret>
-                {this.props.product.Brand.displayName || 'None'}
-              </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem>BRAND</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            <SelectBrandComponent
+              brands={this.props.brands}
+              selectedItem={this.props.product.Brand}
+            />
           }
         </td>
         <td>
@@ -173,9 +169,8 @@ ProductComponent.propTypes = {
   saveHandler: PropTypes.func,
   deleteHandler: PropTypes.func,
   deepEditHandler: PropTypes.func,
+  brands: PropTypes.arrayOf(PropTypes.object),
   // tags: PropTypes.arrayOf(PropTypes.object),
 };
 
-const mapStateToProps = (state) => { console.log(state); };
-
-export default connect(mapStateToProps)(ProductComponent);
+export default ProductComponent;

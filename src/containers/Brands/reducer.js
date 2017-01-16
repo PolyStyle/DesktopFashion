@@ -10,10 +10,8 @@ import {
 } from './action';
 
 export default (state = {}, action) => {
-  console.log(action.type);
   switch (action.type) {
     case UPDATE_BRAND: {
-      console.log('received the redux call');
       const brands = state.brands;
       let currentIndex = -1;
       let i = brands.length - 1;
@@ -22,7 +20,6 @@ export default (state = {}, action) => {
           currentIndex = i;
         }
       }
-      console.log('REDUX ', currentIndex);
       if (currentIndex === -1) {
         return state;
       }

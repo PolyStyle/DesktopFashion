@@ -17,6 +17,7 @@ const initialState = Map({
 export default (state = initialState, action) => {
   switch (action.type) {
     case UPDATE_PRODUCT: {
+      console.log('reducer: update products');
       const products = state.products;
       let currentIndex = -1;
       let i = products.length - 1;
@@ -30,7 +31,7 @@ export default (state = initialState, action) => {
         return state;
       }
 
-      return state.merge({
+      return Object.assign({}, state, {
         products:
         state.products.slice(0, currentIndex)
         .concat([action.newProduct])

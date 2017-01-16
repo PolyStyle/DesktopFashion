@@ -3,8 +3,10 @@ import { Table, Button, Breadcrumb, BreadcrumbItem, Card, CardBlock,
   Input, Modal, ModalBody } from 'reactstrap';
 import { connect } from 'react-redux';
 import ProductComponent from './productComponent';
+import SelectBrandComponent from './../Brands/selectBrandComponent';
 import * as action from './action';
 import * as actionTags from './../Tags/action';
+import * as actionBrands from './../Brands/action';
 import styles from './styles.css';
 
 class Products extends Component {
@@ -13,6 +15,7 @@ class Products extends Component {
     return Promise.all([
       dispatch(action.fetchDataIfNeeded()),
       dispatch(actionTags.fetchDataIfNeeded()),
+      dispatch(actionBrands.fetchDataIfNeeded()),
     ]);
   }
   static addProduct(dispatch) {
@@ -61,6 +64,7 @@ class Products extends Component {
     this.addTag = this.addTag.bind(this);
     this.toggleEditModal = this.toggleEditModal.bind(this);
     this.toggleTagModal = this.toggleTagModal.bind(this);
+    this.changeCurrentBrand = this.changeCurrentBrand.bind(this);
   }
 
   componentDidMount() {
@@ -115,9 +119,6 @@ class Products extends Component {
     const newProduct = this.state.currentProduct.tempValues;
     const id = newProduct.id;
     const index = newProduct.index;
-    console.log('-------');
-    console.log(index);
-    console.log('-------');
     if (id) {
       // This is an existing Product, just update it.
       Products.updateProduct(dispatch, newProduct);
@@ -138,7 +139,6 @@ class Products extends Component {
       Products.deleteProduct(dispatch, id, product.index);
     } else {
       // This is a new tag, create it.
-      console.log('trying to remove Product with index', product.index);
       Products.removeProduct(dispatch, product.index);
     }
   }
@@ -183,15 +183,12 @@ class Products extends Component {
   }
 
   expandPictureInModal() {
-    console.log(this.state.isPictureInModalExpanded);
     this.setState({
       isPictureInModalExpanded: !this.state.isPictureInModalExpanded,
     });
   }
 
   removeTag(index) {
-    console.log('REMOVE TAG', index);
-    console.log(this.state.currentProduct);
     this.setState({
       currentProduct: {
         ...this.state.currentProduct,
@@ -204,8 +201,18 @@ class Products extends Component {
     });
   }
 
+  changeCurrentBrand(brand) {
+    this.setState({
+      currentProduct: {
+        ...this.state.currentProduct,
+        tempValues: {
+          ...this.state.currentProduct.tempValues,
+          Brand: brand,
+        },
+      },
+    });
+  }
   addTag(tag) {
-    console.log('attempt to add tag ', tag);
     let found = false;
     // check if tag exists already
     for (let i = 0; i < this.state.currentProduct.tempValues.Tags.length; i += 1) {
@@ -258,6 +265,12 @@ class Products extends Component {
                     value={this.state.currentProduct.tempValues.productCode || ''}
                     name="productCode"
                     onChange={this.handleChange}
+                  />
+                  <span> Brand </span>
+                  <SelectBrandComponent
+                    brands={this.props.brands}
+                    selectedItem={this.state.currentProduct.Brand}
+                    onChange={this.changeCurrentBrand}
                   />
                   <span> Tags </span>
                   <br />
@@ -315,6 +328,7 @@ class Products extends Component {
                   key={index}
                   index={index}
                   product={product}
+                  brands={this.props.brands}
                   deepEditHandler={this.deepEditHandler}
                   saveHandler={this.saveHandler}
                   deleteHandler={this.deleteHandler}
@@ -334,13 +348,13 @@ Products.propTypes = {
   params: PropTypes.objectOf(PropTypes.string),
   products: PropTypes.arrayOf(PropTypes.object),
   tags: PropTypes.arrayOf(PropTypes.object),
+  brands: PropTypes.arrayOf(PropTypes.object),
 };
 
-const mapStateToProps = (state) => {
-  console.log('STATE 0------');
-  console.log(state.get('products'));
-  console.log(state.get('tags'));
-  return { products: state.get('products').products, tags: state.get('tags').tags };
-};
+const mapStateToProps = state => ({
+  products: state.get('products').products,
+  tags: state.get('tags').tags,
+  brands: state.get('brands').brands,
+});
 
 export default connect(mapStateToProps)(Products);

@@ -59,16 +59,16 @@ export default function createRoutes(store) {
             System.import('./containers/Products'),
             System.import('./containers/Products/reducer'),
             System.import('./containers/Tags/reducer'),
+            System.import('./containers/Brands/reducer'),
           ]);
 
           const renderRoute = loadModule(cb);
 
           importModules
             .then(([Component, ...reducers]) => {
-              console.log('reducer');
-              console.log(reducers);
               injectReducer(store, 'products', reducers[0].default);
               injectReducer(store, 'tags', reducers[1].default);
+              injectReducer(store, 'brands', reducers[2].default);
               renderRoute(Component);
             })
             .catch(errorLoading);
