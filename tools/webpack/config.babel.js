@@ -60,7 +60,7 @@ const getPlugins = () => {
       __SERVER__: false,
       __DEV__: isDev,
     }),
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
     webpackIsomorphicToolsPlugin
   );
 
