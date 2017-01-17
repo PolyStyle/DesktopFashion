@@ -67,6 +67,9 @@ class Products extends Component {
     this.toggleEditModal = this.toggleEditModal.bind(this);
     this.toggleTagModal = this.toggleTagModal.bind(this);
     this.changeCurrentBrand = this.changeCurrentBrand.bind(this);
+    this.handleChangeNewProduct = this.handleChangeNewProduct.bind(this);
+    this.selectCurrentNewProduct = this.selectCurrentNewProduct.bind(this);
+    this.addNewProductSameTemplate = this.addNewProductSameTemplate.bind(this);
   }
 
   componentDidMount() {
@@ -167,6 +170,40 @@ class Products extends Component {
     });
   }
 
+  handleChangeNewProduct(event) {
+    const currentIndex = this.state.currentNewProductIndex;
+    this.setState({
+      ...this.state,
+      newProducts: this.state.newProducts.slice(0, currentIndex)
+        .concat(
+        {
+          ...this.state.newProducts[currentIndex],
+          tempValues: {
+            ...this.state.newProducts[currentIndex].tempValues,
+            [event.target.name]: event.target.value,
+          },
+        },
+        )
+        .concat(this.state.newProducts.slice(currentIndex + 1)),
+    });
+  }
+
+  selectCurrentNewProduct(index) {
+    this.setState({
+      ...this.state,
+      currentNewProductIndex: index,
+    });
+  }
+
+  addNewProductSameTemplate() {
+    this.setState({
+      ...this.state,
+      newProducts: this.state.newProducts.concat(
+        this.state.newProducts[this.state.currentNewProductIndex],
+      ),
+    });
+  }
+
   handleCancel() {
     this.setState({
       isEdited: false,
@@ -182,12 +219,16 @@ class Products extends Component {
   toggleCreateModal() {
     this.setState({
       isCreating: !this.state.isCreating,
-      currentProduct: {
-        displayName: '',
-        productCode: '',
-        Tag: [],
-        Brand: null,
-      },
+      newProducts: [
+        {
+          displayName: '',
+          productCode: '',
+          Tags: [],
+          Brand: null,
+          tempValues: {},
+        },
+      ],
+      currentNewProductIndex: 0,
     });
   }
   toggleTagModal() {
@@ -263,31 +304,106 @@ class Products extends Component {
           >
             {this.state.isCreating &&
               <Container>
+                <h3> Add new Product </h3>
+                <hr />
+                <Row>
+                  Common Carateristics
+                </Row>
                 <Row>
                   <Col>
-                    <img
-                      alt="new product"
-                      src="https://s-media-cache-ak0.pinimg.com/236x/03/47/17/0347173295e9a449e584eff19db0f6c2.jpg"
-                    />
-                  </Col>
-                  <Col>
-                    <span> Display Name </span>
+                    Display Name
                     <Input
                       type="text"
                       size="sm"
-                      placeholder={this.state.currentProduct.displayName}
-                      value={this.state.currentProduct.displayName || ''}
-                      onChange={this.handleChange}
+                      placeholder={
+                        this.state.newProducts[this.state.currentNewProductIndex].displayName
+                      }
+                      value={this.state.newProducts[this.state.currentNewProductIndex].tempValues.displayName || ''}
+                      onChange={this.handleChangeNewProduct}
                       name="displayName"
                     />
-
-
+                  </Col>
+                  <Col>
+                    Brand
+                    <SelectBrandComponent brands={this.props.brands} />
+                  </Col>
+                  <Col>
+                    Product code
+                    <Input
+                      type="text"
+                      size="sm"
+                      placeholder={
+                        this.state.newProducts[this.state.currentNewProductIndex].productCode
+                      }
+                      value={this.state.newProducts[this.state.currentNewProductIndex].tempValues.productCode || ''}
+                      onChange={this.handleChangeNewProduct}
+                      name="productCode"
+                    />
                   </Col>
                 </Row>
                 <hr />
                 <Row>
-                  <Col>.col</Col>
-                  <Col>.col</Col>
+                  Specific Product Informations
+                </Row>
+                {this.state.newProducts.map((product, index) => {
+                  if (index === this.state.currentNewProductIndex) {
+                    return (
+                      <Row className={styles.rowEntrySelected} key={index}>
+                        <Col>
+                          <img
+                            alt="new product"
+                            src={
+                              this.state.newProducts[this.state.currentNewProductIndex]
+                              .tempValues.picture
+                            }
+                          />
+                        </Col>
+                        <Col>
+                          <span> Product Image </span>
+                          <Input
+                            type="text"
+                            size="sm"
+                            placeholder={
+                              this.state.newProducts[this.state.currentNewProductIndex].picture
+                            }
+                            value={this.state.newProducts[this.state.currentNewProductIndex].tempValues.picture || ''}
+                            onChange={this.handleChangeNewProduct}
+                            name="picture"
+                          />
+                          <span> Tags: </span>
+                        </Col>
+                      </Row>
+                    );
+                  }
+                  return (
+                    <Row className={styles.rowEntry} key={index}>
+                      <Col>
+                        <img
+                          className={styles.avatarTable}
+                          src={this.state.newProducts[index].tempValues.picture}
+                          alt="Product"
+                        />
+                      </Col>
+                      <Col>
+                        {this.state.newProducts[index].Tags.map((tag, indexTag) => (
+                          <span
+                            key={indexTag}
+                            className={styles.tagLabel}
+                          >
+                            {tag.displayName}
+                          </span>
+                        ))}
+                      </Col>
+                      <Col>
+                        <Button size="sm" color="secondary" onClick={() => this.selectCurrentNewProduct(index)} > Edit this Item </Button>
+                      </Col>
+                    </Row>
+                  );
+                })}
+                <Row>
+                  <Button size="sm" onClick={this.addNewProductSameTemplate} color="primary"> Add Product with same Template </Button>
+                  <Button size="sm" color="success"> Save All </Button>
+                  <Button size="sm" color="danger"> Cancel All </Button>
                 </Row>
               </Container>
             }

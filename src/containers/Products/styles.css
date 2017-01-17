@@ -62,3 +62,25 @@ td {
   max-width: 100% !important;
 }
 
+.rowEntry {
+  padding: 10px;
+  border-bottom: 1px solid #333;
+}
+
+.rowEntry img{
+  border-radius: 48px;
+  width: 96px;
+  height: 96px;
+}
+
+.rowEntrySelected {
+  padding: 10px;
+  background-color: #ddd;
+  border-bottom: 1px solid #333;
+}
+.rowEntrySelected img{
+  width: 128px;
+  height: 128px;
+  border-radius: 64px;
+
+} 
