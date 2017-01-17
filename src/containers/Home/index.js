@@ -6,6 +6,7 @@ import Helmet from 'react-helmet';
 import * as action from './action';
 import UserList from '../../components/UserList';
 
+
 import styles from './styles.scss';
 
 class Home extends Component {

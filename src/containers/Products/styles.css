@@ -54,3 +54,11 @@ td {
   color: white;
   margin-right: 2px;
 }
+
+.bigModal{
+  margin: 2% !important;
+  padding: 0px;
+  width: 96% !important;
+  max-width: 100% !important;
+}
+

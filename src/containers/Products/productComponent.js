@@ -29,6 +29,8 @@ class ProductComponent extends React.Component {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleDeepEdit = this.handleDeepEdit.bind(this);
     this.toggleBrandDropDown = this.toggleBrandDropDown.bind(this);
+    this.changeCurrentBrand = this.changeCurrentBrand.bind(this);
+    this.removeTag = this.removeTag.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -62,6 +64,31 @@ class ProductComponent extends React.Component {
         tempValues: {
           ...this.state.product.tempValues,
           [event.target.name]: event.target.value,
+        },
+      },
+    });
+  }
+
+  changeCurrentBrand(brand) {
+    this.setState({
+      product: {
+        ...this.state.product,
+        tempValues: {
+          ...this.state.product.tempValues,
+          Brand: brand,
+        },
+      },
+    });
+  }
+
+  removeTag(index) {
+    this.setState({
+      product: {
+        ...this.state.product,
+        tempValues: {
+          ...this.state.product.tempValues,
+          Tags: this.state.product.tempValues.Tags.slice(0, index)
+            .concat(this.state.product.tempValues.Tags.slice(index + 1)),
         },
       },
     });
@@ -118,6 +145,7 @@ class ProductComponent extends React.Component {
             <SelectBrandComponent
               brands={this.props.brands}
               selectedItem={this.props.product.Brand}
+              onChange={this.changeCurrentBrand}
             />
           }
         </td>
@@ -125,8 +153,15 @@ class ProductComponent extends React.Component {
           {!this.state.isEdited && this.state.product.Tags.map((tag, index) => (
             <span key={index} className={styles.tagLabel}>{tag.displayName}</span>
           ))}
-          {this.state.isEdited && this.state.product.Tags.map((tag, index) => (
-            <span key={index} className={styles.tagLabelEdit}>x {tag.displayName}</span>
+          {this.state.isEdited && this.state.product.tempValues.Tags.map((tag, index) => (
+            <Button
+              size="sm"
+              key={index}
+              className={styles.tagLabelEdit}
+              onClick={() => this.removeTag(index)}
+            >
+                x {tag.displayName}
+            </Button>
           ))}
           {this.state.isEdited && <span className={styles.tagLabelAdd}> Add Tag </span>}
         </td>

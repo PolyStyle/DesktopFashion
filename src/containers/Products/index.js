@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Table, Button, Breadcrumb, BreadcrumbItem, Card, CardBlock,
-  Input, Modal, ModalBody } from 'reactstrap';
+  Input, Modal, ModalBody, Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 import ProductComponent from './productComponent';
 import SelectBrandComponent from './../Brands/selectBrandComponent';
@@ -51,6 +51,7 @@ class Products extends Component {
       isTagModalOpen: false,
       isEdited: false,
       isPictureInModalExpanded: false,
+      isCreating: false,
     };
     this.addProductHandler = this.addProductHandler.bind(this);
     this.saveHandler = this.saveHandler.bind(this);
@@ -62,6 +63,7 @@ class Products extends Component {
     this.expandPictureInModal = this.expandPictureInModal.bind(this);
     this.removeTag = this.removeTag.bind(this);
     this.addTag = this.addTag.bind(this);
+    this.toggleCreateModal = this.toggleCreateModal.bind(this);
     this.toggleEditModal = this.toggleEditModal.bind(this);
     this.toggleTagModal = this.toggleTagModal.bind(this);
     this.changeCurrentBrand = this.changeCurrentBrand.bind(this);
@@ -176,6 +178,18 @@ class Products extends Component {
       isEdited: !this.state.isEdited,
     });
   }
+
+  toggleCreateModal() {
+    this.setState({
+      isCreating: !this.state.isCreating,
+      currentProduct: {
+        displayName: '',
+        productCode: '',
+        Tag: [],
+        Brand: null,
+      },
+    });
+  }
   toggleTagModal() {
     this.setState({
       isTagModalOpen: !this.state.isTagModalOpen,
@@ -239,9 +253,45 @@ class Products extends Component {
           <Breadcrumb>
             <BreadcrumbItem active>Products</BreadcrumbItem>
             <BreadcrumbItem active>
-              <Button color="success" onClick={this.addProductHandler} size="sm">Add Product</Button>
+              <Button color="success" onClick={this.toggleCreateModal} size="sm">Add Product</Button>
             </BreadcrumbItem>
           </Breadcrumb>
+          <Modal
+            className={styles.bigModal}
+            isOpen={this.state.isCreating}
+            toggle={this.toggleCreateModal}
+          >
+            {this.state.isCreating &&
+              <Container>
+                <Row>
+                  <Col>
+                    <img
+                      alt="new product"
+                      src="https://s-media-cache-ak0.pinimg.com/236x/03/47/17/0347173295e9a449e584eff19db0f6c2.jpg"
+                    />
+                  </Col>
+                  <Col>
+                    <span> Display Name </span>
+                    <Input
+                      type="text"
+                      size="sm"
+                      placeholder={this.state.currentProduct.displayName}
+                      value={this.state.currentProduct.displayName || ''}
+                      onChange={this.handleChange}
+                      name="displayName"
+                    />
+
+
+                  </Col>
+                </Row>
+                <hr />
+                <Row>
+                  <Col>.col</Col>
+                  <Col>.col</Col>
+                </Row>
+              </Container>
+            }
+          </Modal>
           <Modal isOpen={this.state.isEdited} toggle={this.toggleEditModal}>
             {this.state.isEdited &&
               <Card>
