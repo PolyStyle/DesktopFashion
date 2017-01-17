@@ -52,6 +52,7 @@ class Products extends Component {
       isEdited: false,
       isPictureInModalExpanded: false,
       isCreating: false,
+      isTagNewProductModalOpen: false,
     };
     this.addProductHandler = this.addProductHandler.bind(this);
     this.saveHandler = this.saveHandler.bind(this);
@@ -70,6 +71,9 @@ class Products extends Component {
     this.handleChangeNewProduct = this.handleChangeNewProduct.bind(this);
     this.selectCurrentNewProduct = this.selectCurrentNewProduct.bind(this);
     this.addNewProductSameTemplate = this.addNewProductSameTemplate.bind(this);
+    this.removeNewProduct = this.removeNewProduct.bind(this);
+    this.toggleTagNewProductModal = this.toggleTagNewProductModal.bind(this);
+    this.addTagToNewProduct = this.addTagToNewProduct.bind(this);
   }
 
   componentDidMount() {
@@ -203,7 +207,18 @@ class Products extends Component {
       ),
     });
   }
-
+  removeNewProduct(index) {
+    if (this.state.newProducts.length === 1) {
+      return;
+    }
+    const newIndex = Math.max(0, index - 1);
+    this.setState({
+      ...this.state,
+      newProducts: this.state.newProducts.slice(0, index)
+        .concat(this.state.newProducts.slice(index + 1)),
+      currentNewProductIndex: newIndex,
+    });
+  }
   handleCancel() {
     this.setState({
       isEdited: false,
@@ -229,11 +244,6 @@ class Products extends Component {
         },
       ],
       currentNewProductIndex: 0,
-    });
-  }
-  toggleTagModal() {
-    this.setState({
-      isTagModalOpen: !this.state.isTagModalOpen,
     });
   }
 
@@ -267,6 +277,12 @@ class Products extends Component {
       },
     });
   }
+
+  toggleTagModal() {
+    this.setState({
+      isTagModalOpen: !this.state.isTagModalOpen,
+    });
+  }
   addTag(tag) {
     let found = false;
     // check if tag exists already
@@ -287,6 +303,39 @@ class Products extends Component {
       });
     }
   }
+
+  toggleTagNewProductModal() {
+    console.log('Closing modal');
+    this.setState({
+      isTagNewProductModalOpen: !this.state.isTagNewProductModalOpen,
+    });
+  }
+  addTagToNewProduct(tag) {
+    console.log('adding TAG ');
+    let found = false;
+    const index = this.state.currentNewProductIndex;
+    // check if tag exists already
+    console.log('CHECK TAGS', this.state.newProducts[index].Tags.length);
+    for (let i = 0; i < this.state.newProducts[index].Tags.length; i += 1) {
+      if (this.state.newProducts[index].Tags[i].id === tag.id) {
+        found = true;
+      }
+    }
+    console.log('Found : ', found);
+    if (!found) {
+      this.setState({
+        ...this.state,
+        newProducts: this.state.newProducts.slice(0, index)
+          .concat({
+            ...this.state.newProducts[index],
+            Tags: this.state.newProducts[index].Tags.concat(tag),
+          })
+          .concat(this.state.newProducts.slice(index + 1)),
+      });
+    }
+  }
+
+
   render() {
     if (this.props.products) {
       return (
@@ -302,6 +351,22 @@ class Products extends Component {
             isOpen={this.state.isCreating}
             toggle={this.toggleCreateModal}
           >
+            <Modal
+              isOpen={this.state.isTagNewProductModalOpen}
+              toggle={this.toggleTagNewProductModal}
+            >
+              <ModalBody>
+                {this.props.tags.map((tag, index) => (
+                  <Button key={index} size="sm" color="secondary" onClick={() => this.addTagToNewProduct(tag)}>
+                  + {tag.displayName}
+                  </Button>
+                ))}
+                <br />
+                <Button size="sm" color="danger" onClick={this.toggleTagNewProductModal}>
+                  Close
+                </Button>
+              </ModalBody>
+            </Modal>
             {this.state.isCreating &&
               <Container>
                 <h3> Add new Product </h3>
@@ -371,6 +436,16 @@ class Products extends Component {
                             name="picture"
                           />
                           <span> Tags: </span>
+                          {this.state.newProducts[index].Tags.map((tag, indexTag) => (
+                            <Button size="sm" key={indexTag} color="secondary" onClick={() => this.removeTag(indexTag)}>
+                            x {tag.displayName}
+                            </Button>
+                          ))}
+                          <Button size="sm" color="success" onClick={this.toggleTagNewProductModal}> Add Tag </Button>
+                        </Col>
+                        <Col>
+                          <Button size="sm" onClick={this.addNewProductSameTemplate} color="primary"> Duplicate Item </Button>
+                          <Button size="sm" onClick={() => this.removeNewProduct(index)} color="danger"> Delete Item </Button>
                         </Col>
                       </Row>
                     );
