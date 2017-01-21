@@ -49,7 +49,8 @@ export default (store, content) => {
         <script type="text/javascript">
           ${store && `window.__INITIAL_STATE__=${serialize(store.getState())}`}
         </script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+        <link rel="stylesheet" href="/dropzone.min.css?${Math.random()*10000}" />
+        <link rel="stylesheet" href="/bootstrap.css?${Math.random()*10000}" />
         <!--[if gte IE 9 ]>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js"></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-sham.min.js"></script>

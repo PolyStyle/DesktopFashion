@@ -63,7 +63,7 @@ module.exports = {
       __DEV__: process.env.NODE_ENV !== 'production',
     }),
     new webpack.IgnorePlugin(/\.json$/),
-    new webpack.NoErrorsPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
   ],
   performance: {
     hints: false,

@@ -29,6 +29,8 @@ app.use(compression());
 // Use morgan for http request debug (only show error)
 app.use(morgan('dev', { skip: (req, res) => res.statusCode < 400 }));
 app.use(favicon(path.join(process.cwd(), './public/favicon.ico')));
+app.use(favicon(path.join(process.cwd(), './public/bootstrap.css')));
+app.use(favicon(path.join(process.cwd(), './public/dropzone.min.css')));
 app.use(express.static(path.join(process.cwd(), './public')));
 
 // Run express as webpack dev server

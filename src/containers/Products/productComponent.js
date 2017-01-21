@@ -163,7 +163,7 @@ class ProductComponent extends React.Component {
                 x {tag.displayName}
             </Button>
           ))}
-          {this.state.isEdited && <span className={styles.tagLabelAdd}> Add Tag </span>}
+          {this.state.isEdited && <Button size="sm" color="primary" className={styles.tagLabelAdd}> Add Tag </Button>}
         </td>
         <td>
           {!this.state.isEdited && this.state.product.displayName}
@@ -178,7 +178,7 @@ class ProductComponent extends React.Component {
             />}
         </td>
         <td>
-          {!this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleDeepEdit} color="info" size="sm">Edit</Button>}
+          {!this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleDeepEdit} color="primary" size="sm">Edit</Button>}
           {!this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleEdit} color="primary" size="sm">Quick Edit</Button>}
           {this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleCancel} color="secondary" size="sm">Cancel</Button>}
           {!this.state.isEdited && !this.props.product.id && <Button onClick={this.handleSave} color="success" size="sm">Save</Button>}

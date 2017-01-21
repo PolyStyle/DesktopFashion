@@ -8,6 +8,7 @@ import * as action from './action';
 import * as actionTags from './../Tags/action';
 import * as actionBrands from './../Brands/action';
 import styles from './styles.css';
+import Uploader from './../../components/Uploader';
 
 class Products extends Component {
   // Fetching data method for both server/client side rendering
@@ -369,11 +370,14 @@ class Products extends Component {
             </Modal>
             {this.state.isCreating &&
               <Container>
-                <h3> Add new Product </h3>
-                <hr />
-                <Row>
-                  Common Carateristics
+                <Row className={styles.rowCentered}>
+                  <Col>
+                    <Button size="sm" onClick={this.addNewProductSameTemplate} color="primary"> Add Product with same Template </Button>
+                    <Button size="sm" color="success"> Save All </Button>
+                    <Button size="sm" color="danger"> Cancel All </Button>
+                  </Col>
                 </Row>
+                <hr />
                 <Row>
                   <Col>
                     Display Name
@@ -415,13 +419,7 @@ class Products extends Component {
                     return (
                       <Row className={styles.rowEntrySelected} key={index}>
                         <Col>
-                          <img
-                            alt="new product"
-                            src={
-                              this.state.newProducts[this.state.currentNewProductIndex]
-                              .tempValues.picture
-                            }
-                          />
+                          <Uploader displayName="UploadeR" />
                         </Col>
                         <Col>
                           <span> Product Image </span>
@@ -475,10 +473,12 @@ class Products extends Component {
                     </Row>
                   );
                 })}
-                <Row>
-                  <Button size="sm" onClick={this.addNewProductSameTemplate} color="primary"> Add Product with same Template </Button>
-                  <Button size="sm" color="success"> Save All </Button>
-                  <Button size="sm" color="danger"> Cancel All </Button>
+                <Row className={styles.rowCentered}>
+                  <Col>
+                    <Button size="sm" onClick={this.addNewProductSameTemplate} color="primary"> Add Product with same Template </Button>
+                    <Button size="sm" color="success"> Save All </Button>
+                    <Button size="sm" color="danger"> Cancel All </Button>
+                  </Col>
                 </Row>
               </Container>
             }
