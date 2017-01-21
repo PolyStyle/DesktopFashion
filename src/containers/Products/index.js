@@ -227,12 +227,23 @@ class Products extends Component {
     if (this.state.newProducts.length === 1) {
       return;
     }
+    console.log('remove item ', index);
     const newIndex = Math.max(0, index - 1);
+    console.log('the new item index', newIndex);
+    console.log('----');
+    console.log(this.state.newProducts);
+    console.log('REMOVING:');
+    console.log(
+      this.state.newProducts.slice(
+        this.state.currentNewProductIndex,
+        this.state.currentNewProductIndex + 1,
+      ),
+    );
+    console.log('----');
     this.setState({
       ...this.state,
       newProducts: this.state.newProducts.slice(0, index)
         .concat(this.state.newProducts.slice(index + 1)),
-      currentNewProductIndex: newIndex,
     });
   }
   handleCancel() {
@@ -252,7 +263,6 @@ class Products extends Component {
       isCreating: !this.state.isCreating,
       newProducts: [
         {
-          displayName: '',
           productCode: '',
           Tags: [],
           Brand: null,
@@ -377,7 +387,7 @@ class Products extends Component {
     if (this.props.products) {
       return (
         <div>
-          <TagSelector tags={this.props.tags} />
+          <TagSelector />
           <Breadcrumb>
             <BreadcrumbItem active>Products</BreadcrumbItem>
             <BreadcrumbItem active>
@@ -421,10 +431,8 @@ class Products extends Component {
                     <Input
                       type="text"
                       size="sm"
-                      placeholder={
-                        this.state.newProducts[this.state.currentNewProductIndex].displayName
-                      }
-                      value={this.state.newProducts[this.state.currentNewProductIndex].tempValues.displayName || ''}
+                      placeholder="displayName"
+                      value="displayName"
                       onChange={this.handleChangeNewProduct}
                       name="displayName"
                     />
@@ -438,10 +446,8 @@ class Products extends Component {
                     <Input
                       type="text"
                       size="sm"
-                      placeholder={
-                        this.state.newProducts[this.state.currentNewProductIndex].productCode
-                      }
-                      value={this.state.newProducts[this.state.currentNewProductIndex].tempValues.productCode || ''}
+                      placeholder="product code"
+                      value="product code"
                       onChange={this.handleChangeNewProduct}
                       name="productCode"
                     />
@@ -460,6 +466,7 @@ class Products extends Component {
                     duplicateProductHandler={this.duplicateProductHandler}
                     editAnotherElementHandler={this.editAnotherElementHandler}
                     onChangeHandler={this.onChangeHandlerNewProduct}
+                    removeProductHandler={this.removeNewProduct}
                   />,
                 )}
                 <Row className={styles.rowCentered}>

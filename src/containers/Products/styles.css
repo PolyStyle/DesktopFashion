@@ -18,7 +18,7 @@ td {
   object-fit: cover;
   font-size: 12px;
   border-radius: 21px;
-  border: 0px solid #ffcc00;
+  border: 1px solid transparent;
 }
 .backgroundHeader{
   flex: 1;
@@ -115,7 +115,7 @@ td {
     width: 24px !important;
     position: absolute;
     height: 24px !important;
-    background-color: #c9302c !important;
+    background-color: #e46a6b !important;
     text-indent: 100% !important;
     white-space: nowrap !important;
     overflow: hidden !important;

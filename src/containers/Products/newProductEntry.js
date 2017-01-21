@@ -2,14 +2,14 @@ import React, { PropTypes } from 'react';
 import { Row, Col, Input, Button } from 'reactstrap';
 import styles from './styles.css';
 import Uploader from './../../components/Uploader';
-
+import TagSelector from './../../components/TagSelector';
 
 export default class NewProductEntry extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       tempValues: {},
-      picture: '',
+      id: null,
       ...this.props.product,
       Tags: [],
       isEditing: this.props.isEditing,
@@ -25,15 +25,17 @@ export default class NewProductEntry extends React.Component {
     this.resetLoader = this.resetLoader.bind(this);
     this.onChange = this.onChange.bind(this);
     this.fileAddedHandler = this.fileAddedHandler.bind(this);
+    this.removeProduct = this.removeProduct.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log('RECEIVING NEW PROPS', this.props.index, nextProps);
     this.setState({
+      ...nextProps.product,
       isEditing: nextProps.isEditing,
     });
   }
   onChange() {
-    console.log('CHANGE', this.props.index, this.state);
     if (this.props.onChangeHandler) {
       this.props.onChangeHandler(this.props.index, this.state);
     }
@@ -52,15 +54,16 @@ export default class NewProductEntry extends React.Component {
   }
 
   removeProduct() {
-    console.log('trying to remove this product', this);
+    if (this.props.removeProductHandler) {
+      this.props.removeProductHandler(this.props.index);
+    }
   }
 
   removeTag(index) {
-    console.log('remove tag of index ', index, this);
+    console.log(this, index);
   }
 
   fileAddedHandler() {
-    console.log('added file');
     this.editItem();
   }
 
@@ -69,7 +72,7 @@ export default class NewProductEntry extends React.Component {
     this.setState({
       ...this.state,
       previewBase64: file.previewElement.firstElementChild.firstElementChild.currentSrc,
-      picture: responseObject.id,
+      id: responseObject.id,
     }, this.onChange);
   }
 
@@ -77,7 +80,7 @@ export default class NewProductEntry extends React.Component {
     console.log('Remove image HANDLER');
     this.setState({
       ...this.state,
-      picture: null,
+      id: null,
       previewBase64: null,
     }, this.onChange);
   }
@@ -95,6 +98,7 @@ export default class NewProductEntry extends React.Component {
   resetLoader() {
     this.setState({
       previewBase64: null,
+      id: null,
     }, this.onChange);
   }
 
@@ -128,13 +132,14 @@ export default class NewProductEntry extends React.Component {
               type="text"
               size="sm"
               placeholder={
-                this.state.picture
+                this.state.id
               }
-              value={this.state.tempValues.picture || ''}
+              value={this.state.id || ''}
               onChange={this.handleChangeNewProduct}
-              name="picture"
+              name="id"
             />
             <span> Tags: </span>
+            <TagSelector />
           </Col>
           <Col>
             <Button size="sm" onClick={this.duplicateProduct} color="primary"> Duplicate Item </Button>
@@ -144,7 +149,7 @@ export default class NewProductEntry extends React.Component {
       );
     }
     return (
-      <Row className={styles.rowEntry} key={this.props.index}>
+      <Row className={styles.rowEntry} key={this.props.index} onClick={this.editItem}>
         <Col>
           {this.state.previewBase64 &&
             <img
@@ -163,6 +168,7 @@ export default class NewProductEntry extends React.Component {
           }
         </Col>
         <Col>
+          {this.props.index}
           {this.state.Tags.map((tag, indexTag) => (
             <span
               key={indexTag}
@@ -187,10 +193,12 @@ NewProductEntry.defaultProps = {
 NewProductEntry.propTypes = {
   index: PropTypes.number,
   isEditing: PropTypes.bool,
-  product: PropTypes.objectOf(PropTypes.object),
+  // eslint-disable-next-line react/forbid-prop-types
+  product: PropTypes.object,
   selectedRowHandler: PropTypes.func,
   duplicateProductHandler: PropTypes.func,
   editAnotherElementHandler: PropTypes.func,
   onChangeHandler: PropTypes.func,
+  removeProductHandler: PropTypes.func,
 
 };

@@ -1,16 +1,26 @@
 .selectedTags {
 	width: 50%;
-	background-color: #0000ff;
-	display: block;
+	padding: 5px;
 	float: left;
 }
 .selectTags{
+	border-right: 1px solid #999;
+	padding: 5px;
 	width: 50%;
-	background-color: #f300f3;
 	display: block;
 	float: left;
 }
 .buttons{
+ 	padding-top: 20px;
 	clear: both;
-	background-color: #ffcc00;
+	flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bigModal{
+  margin: 2% !important;
+  padding: 0px;
+  width: 96% !important;
+  max-width: 100% !important;
 }

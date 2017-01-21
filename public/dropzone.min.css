@@ -296,7 +296,7 @@
     width: 24px;
     position: absolute;
     height: 24px;
-    background-color: #c9302c;
+    background-color: #e46a6b;
     text-indent: 100%;
     white-space: nowrap;
     overflow: hidden;
@@ -391,11 +391,11 @@
 }
 
 .dropzone .dz-preview.dz-success .dz-success-mark {
-    -webkit-animation: passing-through 3s cubic-bezier(0.77, 0, 0.175, 1);
-    -moz-animation: passing-through 3s cubic-bezier(0.77, 0, 0.175, 1);
-    -ms-animation: passing-through 3s cubic-bezier(0.77, 0, 0.175, 1);
-    -o-animation: passing-through 3s cubic-bezier(0.77, 0, 0.175, 1);
-    animation: passing-through 3s cubic-bezier(0.77, 0, 0.175, 1);
+    -webkit-animation: passing-through 2223s cubic-bezier(0.77, 0, 0.175, 1);
+    -moz-animation: passing-through 2223s cubic-bezier(0.77, 0, 0.175, 1);
+    -ms-animation: passing-through 2223s cubic-bezier(0.77, 0, 0.175, 1);
+    -o-animation: passing-through 2223s cubic-bezier(0.77, 0, 0.175, 1);
+    animation: passing-through 2223s cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 .dropzone .dz-preview.dz-error .dz-error-mark {
@@ -467,7 +467,7 @@
     height: 4px;
     left: 50%;
     top: 50%;
-    margin-top: -12px;
+    margin-top: 0px;
     width: 80px;
     margin-left: -40px;
     background: #999;
