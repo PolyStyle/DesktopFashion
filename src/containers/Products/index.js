@@ -8,7 +8,8 @@ import * as action from './action';
 import * as actionTags from './../Tags/action';
 import * as actionBrands from './../Brands/action';
 import styles from './styles.css';
-import Uploader from './../../components/Uploader';
+import NewProductEntry from './newProductEntry';
+import TagSelector from './../../components/TagSelector';
 
 class Products extends Component {
   // Fetching data method for both server/client side rendering
@@ -75,6 +76,9 @@ class Products extends Component {
     this.removeNewProduct = this.removeNewProduct.bind(this);
     this.toggleTagNewProductModal = this.toggleTagNewProductModal.bind(this);
     this.addTagToNewProduct = this.addTagToNewProduct.bind(this);
+    this.duplicateProductHandler = this.duplicateProductHandler.bind(this);
+    this.editAnotherElementHandler = this.editAnotherElementHandler.bind(this);
+    this.onChangeHandlerNewProduct = this.onChangeHandlerNewProduct.bind(this);
   }
 
   componentDidMount() {
@@ -104,6 +108,17 @@ class Products extends Component {
         },
       });
     }
+  }
+
+  onChangeHandlerNewProduct(index, state) {
+    console.log(state);
+    console.log(index);
+    this.setState({
+      ...this.state,
+      newProducts: this.state.newProducts.slice(0, index)
+        .concat(state)
+        .concat(this.state.newProducts.slice(index + 1)),
+    });
   }
 
   addProductHandler() {
@@ -241,6 +256,7 @@ class Products extends Component {
           productCode: '',
           Tags: [],
           Brand: null,
+          isEditing: true,
           tempValues: {},
         },
       ],
@@ -336,11 +352,32 @@ class Products extends Component {
     }
   }
 
+  duplicateProductHandler(index) {
+    console.log('DUPLICATING ITEM WITH THIS SATE', this.state.newProducts[index]);
+    this.setState({
+      ...this.state,
+      newProducts: this.state.newProducts.concat(
+        {
+          ...this.state.newProducts[index],
+          isEditing: false,
+        },
+      ),
+    });
+  }
+
+  editAnotherElementHandler(index) {
+    this.setState({
+      ...this.state,
+      currentNewProductIndex: index,
+    });
+  }
+
 
   render() {
     if (this.props.products) {
       return (
         <div>
+          <TagSelector tags={this.props.tags} />
           <Breadcrumb>
             <BreadcrumbItem active>Products</BreadcrumbItem>
             <BreadcrumbItem active>
@@ -414,65 +451,17 @@ class Products extends Component {
                 <Row>
                   Specific Product Informations
                 </Row>
-                {this.state.newProducts.map((product, index) => {
-                  if (index === this.state.currentNewProductIndex) {
-                    return (
-                      <Row className={styles.rowEntrySelected} key={index}>
-                        <Col>
-                          <Uploader displayName="UploadeR" />
-                        </Col>
-                        <Col>
-                          <span> Product Image </span>
-                          <Input
-                            type="text"
-                            size="sm"
-                            placeholder={
-                              this.state.newProducts[this.state.currentNewProductIndex].picture
-                            }
-                            value={this.state.newProducts[this.state.currentNewProductIndex].tempValues.picture || ''}
-                            onChange={this.handleChangeNewProduct}
-                            name="picture"
-                          />
-                          <span> Tags: </span>
-                          {this.state.newProducts[index].Tags.map((tag, indexTag) => (
-                            <Button size="sm" key={indexTag} color="secondary" onClick={() => this.removeTag(indexTag)}>
-                            x {tag.displayName}
-                            </Button>
-                          ))}
-                          <Button size="sm" color="success" onClick={this.toggleTagNewProductModal}> Add Tag </Button>
-                        </Col>
-                        <Col>
-                          <Button size="sm" onClick={this.addNewProductSameTemplate} color="primary"> Duplicate Item </Button>
-                          <Button size="sm" onClick={() => this.removeNewProduct(index)} color="danger"> Delete Item </Button>
-                        </Col>
-                      </Row>
-                    );
-                  }
-                  return (
-                    <Row className={styles.rowEntry} key={index}>
-                      <Col>
-                        <img
-                          className={styles.avatarTable}
-                          src={this.state.newProducts[index].tempValues.picture}
-                          alt="Product"
-                        />
-                      </Col>
-                      <Col>
-                        {this.state.newProducts[index].Tags.map((tag, indexTag) => (
-                          <span
-                            key={indexTag}
-                            className={styles.tagLabel}
-                          >
-                            {tag.displayName}
-                          </span>
-                        ))}
-                      </Col>
-                      <Col>
-                        <Button size="sm" color="secondary" onClick={() => this.selectCurrentNewProduct(index)} > Edit this Item </Button>
-                      </Col>
-                    </Row>
-                  );
-                })}
+                {this.state.newProducts.map((product, index) =>
+                  <NewProductEntry
+                    isEditing={index === this.state.currentNewProductIndex}
+                    key={index}
+                    index={index}
+                    product={product}
+                    duplicateProductHandler={this.duplicateProductHandler}
+                    editAnotherElementHandler={this.editAnotherElementHandler}
+                    onChangeHandler={this.onChangeHandlerNewProduct}
+                  />,
+                )}
                 <Row className={styles.rowCentered}>
                   <Col>
                     <Button size="sm" onClick={this.addNewProductSameTemplate} color="primary"> Add Product with same Template </Button>

@@ -8,7 +8,7 @@ div.filepicker {
     width: 96px;
     height: 96px;
     border-radius: 48px;
-    border: 1px solid #fdfdfd;
+    border: 1px solid #efefef;
 }
 
 /* Icon */
@@ -28,9 +28,7 @@ div.filepicker {
     left: 0;
     width: 29px;
     height: 34px;
-
     content: '';
-
     border: solid 2px #7F7F7F;
     border-radius: 2px;
 }

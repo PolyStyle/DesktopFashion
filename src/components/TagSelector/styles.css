@@ -1,0 +1,16 @@
+.selectedTags {
+	width: 50%;
+	background-color: #0000ff;
+	display: block;
+	float: left;
+}
+.selectTags{
+	width: 50%;
+	background-color: #f300f3;
+	display: block;
+	float: left;
+}
+.buttons{
+	clear: both;
+	background-color: #ffcc00;
+}
