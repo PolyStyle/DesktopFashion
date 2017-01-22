@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Row, Col, Input, Button } from 'reactstrap';
+import { Row, Col, Button } from 'reactstrap';
 import styles from './styles.css';
 import Uploader from './../../components/Uploader';
 import TagSelector from './../../components/TagSelector';
@@ -11,10 +11,9 @@ export default class NewProductEntry extends React.Component {
       tempValues: {},
       id: null,
       ...this.props.product,
-      Tags: [],
       isEditing: this.props.isEditing,
     };
-
+    console.log('CREATED NEW ITEM with index: ', this.props.index);
     this.removeTag = this.removeTag.bind(this);
     this.removeProduct = this.removeProduct.bind(this);
     this.duplicateProduct = this.duplicateProduct.bind(this);
@@ -26,6 +25,7 @@ export default class NewProductEntry extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.fileAddedHandler = this.fileAddedHandler.bind(this);
     this.removeProduct = this.removeProduct.bind(this);
+    this.onTagSaveHandler = this.onTagSaveHandler.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -39,6 +39,13 @@ export default class NewProductEntry extends React.Component {
     if (this.props.onChangeHandler) {
       this.props.onChangeHandler(this.props.index, this.state);
     }
+  }
+
+  onTagSaveHandler(tags) {
+    console.log('Received tags', tags);
+    this.setState({
+      Tags: tags,
+    }, this.onChange);
   }
 
   selectCurrentRow() {
@@ -127,19 +134,19 @@ export default class NewProductEntry extends React.Component {
             }
           </Col>
           <Col>
-            <span> Product Image {this.props.isEditing}</span>
-            <Input
-              type="text"
-              size="sm"
-              placeholder={
-                this.state.id
-              }
-              value={this.state.id || ''}
-              onChange={this.handleChangeNewProduct}
-              name="id"
-            />
             <span> Tags: </span>
-            <TagSelector />
+            {this.state.Tags.map((tag, indexTag) => (
+              <span
+                key={indexTag}
+                className={styles.tagLabel}
+              >
+                {tag.displayName}
+              </span>
+            ))}
+            <TagSelector
+              onTagSaveHandler={this.onTagSaveHandler}
+              currentAddedTags={this.state.Tags}
+            />
           </Col>
           <Col>
             <Button size="sm" onClick={this.duplicateProduct} color="primary"> Duplicate Item </Button>
@@ -168,7 +175,6 @@ export default class NewProductEntry extends React.Component {
           }
         </Col>
         <Col>
-          {this.props.index}
           {this.state.Tags.map((tag, indexTag) => (
             <span
               key={indexTag}

@@ -9,7 +9,7 @@ class TagSelector extends React.Component {
     super(props);
     this.state = {
       tags: this.props.tags,
-      addedTags: [],
+      addedTags: this.props.currentAddedTags,
       isTagModalOpen: false,
     };
     // For a full list of possible configurations,
@@ -20,8 +20,11 @@ class TagSelector extends React.Component {
   }
 
   onSaveAll() {
-    if (this.props.onSaveAllHandler) {
-      this.props.onSaveAllHandler(this.state.addedTags);
+    this.setState({
+      isTagModalOpen: false,
+    });
+    if (this.props.onTagSaveHandler) {
+      this.props.onTagSaveHandler(this.state.addedTags);
     }
   }
 
@@ -58,8 +61,6 @@ class TagSelector extends React.Component {
     } else {
       this.setState({
         isTagModalOpen: true,
-        tags: this.props.tags,
-        addedTags: [],
       });
     }
   }
@@ -67,7 +68,7 @@ class TagSelector extends React.Component {
   render() {
     return (
       <div>
-        <Button size="sm" color="success" onClick={this.toggleTagModal}> Add Tag </Button>
+        <Button size="sm" color="success" onClick={this.toggleTagModal}> Edit Tags </Button>
         <Modal
           className={styles.bigModal}
           isOpen={this.state.isTagModalOpen}
@@ -103,12 +104,14 @@ class TagSelector extends React.Component {
 
 TagSelector.defaultProps = {
   tags: [],
+  currentAddedTags: [],
 };
 
 TagSelector.propTypes = {
   tags: PropTypes.arrayOf(PropTypes.object),
-  onSaveAllHandler: PropTypes.func,
   onCancelAllHandler: PropTypes.func,
+  onTagSaveHandler: PropTypes.func,
+  currentAddedTags: PropTypes.arrayOf(PropTypes.object),
 };
 
 const mapStateToProps = state => ({ tags: state.get('tags').tags });
