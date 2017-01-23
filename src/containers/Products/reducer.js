@@ -17,7 +17,6 @@ const initialState = Map({
 export default (state = initialState, action) => {
   switch (action.type) {
     case UPDATE_PRODUCT: {
-      console.log('reducer: update products');
       const products = state.products;
       let currentIndex = -1;
       let i = products.length - 1;
@@ -60,11 +59,7 @@ export default (state = initialState, action) => {
     case ADD_PRODUCT:
       return {
         ...state,
-        products: state.products.concat({
-          display: ' test',
-          picture: 'https://kickz.akamaized.net/en/media/images/p/600/nike-W_INTERNATIONALIST_PRM-CL_GREY_ANTHRCT_PR_PLTNM_WHITE-1.jpg',
-          Tags: [],
-        }),
+        products: state.products.concat(action.newProduct),
       };
     case PRODUCTS_REQUESTED:
       return {

@@ -12,12 +12,11 @@ td {
   object-fit: cover;
 }
 
-.avatarTable {
-  width: 42px;
-  height: 42px;
+.postImage {
+  width: 100px;
+  height: 150px;
   object-fit: cover;
   font-size: 12px;
-  border-radius: 21px;
 }
 .backgroundHeader{
   flex: 1;
@@ -129,4 +128,7 @@ td {
     top: 0 !important;
     right: 0 !important;
     z-index: 1001;
+}
+.tdStyle {
+  border-right: 1px solid #efefef;
 }

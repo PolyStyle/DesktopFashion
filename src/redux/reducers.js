@@ -29,6 +29,7 @@ export default function createReducer(asyncReducers) {
     tags: (state = {}) => state,
     brands: (state = {}) => state,
     products: (state = {}) => state,
+    posts: (state = {}) => state,
     ...asyncReducers,
   });
 }

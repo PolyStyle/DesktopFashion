@@ -1,0 +1,26 @@
+.selectedBrands {
+  width: 50%;
+  padding: 5px;
+  float: left;
+}
+.selectBrands{
+  border-right: 1px solid #999;
+  padding: 5px;
+  width: 50%;
+  display: block;
+  float: left;
+}
+.buttons{
+  padding-top: 20px;
+  clear: both;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bigModal{
+  margin: 2% !important;
+  padding: 0px;
+  width: 96% !important;
+  max-width: 100% !important;
+}

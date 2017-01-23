@@ -253,7 +253,7 @@
 
 .dropzone .dz-message {
     min-width: 100%;
-    margin-top: 36px;
+    margin-top: 30px;
     max-width: 100%;
     font-size: 12px;
 }
@@ -375,10 +375,10 @@
 }
 
 .dropzone .dz-preview .dz-image {
-    border-radius: 48px;
+    border-radius: 40px;
     overflow: hidden;
-    width: 96px;
-    height: 96px;
+    width: 80px;
+    height: 80px;
     position: relative;
     display: block;
     z-index: 10;

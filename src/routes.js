@@ -75,6 +75,30 @@ export default function createRoutes(store) {
         },
       },
       {
+        path: '/posts',
+        getComponent(nextState, cb) {
+          const importModules = Promise.all([
+            System.import('./containers/Posts'),
+            System.import('./containers/Posts/reducer'),
+            System.import('./containers/Products/reducer'),
+            System.import('./containers/Tags/reducer'),
+            System.import('./containers/Brands/reducer'),
+          ]);
+
+          const renderRoute = loadModule(cb);
+
+          importModules
+            .then(([Component, ...reducers]) => {
+              injectReducer(store, 'posts', reducers[0].default);
+              injectReducer(store, 'products', reducers[1].default);
+              injectReducer(store, 'tags', reducers[2].default);
+              injectReducer(store, 'brands', reducers[3].default);
+              renderRoute(Component);
+            })
+            .catch(errorLoading);
+        },
+      },
+      {
         path: '/tags',
         getComponent(nextState, cb) {
           const importModules = Promise.all([

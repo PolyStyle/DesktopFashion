@@ -9,11 +9,10 @@ export default class NewProductEntry extends React.Component {
     super(props);
     this.state = {
       tempValues: {},
-      id: null,
+      ImageId: null,
       ...this.props.product,
       isEditing: this.props.isEditing,
     };
-    console.log('CREATED NEW ITEM with index: ', this.props.index);
     this.removeTag = this.removeTag.bind(this);
     this.removeProduct = this.removeProduct.bind(this);
     this.duplicateProduct = this.duplicateProduct.bind(this);
@@ -29,7 +28,6 @@ export default class NewProductEntry extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('RECEIVING NEW PROPS', this.props.index, nextProps);
     this.setState({
       ...nextProps.product,
       isEditing: nextProps.isEditing,
@@ -42,7 +40,6 @@ export default class NewProductEntry extends React.Component {
   }
 
   onTagSaveHandler(tags) {
-    console.log('Received tags', tags);
     this.setState({
       Tags: tags,
     }, this.onChange);
@@ -79,15 +76,14 @@ export default class NewProductEntry extends React.Component {
     this.setState({
       ...this.state,
       previewBase64: file.previewElement.firstElementChild.firstElementChild.currentSrc,
-      id: responseObject.id,
+      ImageId: responseObject.id,
     }, this.onChange);
   }
 
   imageRemovedHandler() {
-    console.log('Remove image HANDLER');
     this.setState({
       ...this.state,
-      id: null,
+      ImageId: null,
       previewBase64: null,
     }, this.onChange);
   }
@@ -105,7 +101,7 @@ export default class NewProductEntry extends React.Component {
   resetLoader() {
     this.setState({
       previewBase64: null,
-      id: null,
+      ImageId: null,
     }, this.onChange);
   }
 

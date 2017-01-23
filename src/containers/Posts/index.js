@@ -2,49 +2,53 @@ import React, { Component, PropTypes } from 'react';
 import { Table, Button, Breadcrumb, BreadcrumbItem, Card, CardBlock,
   Input, Modal, ModalBody, Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
-import ProductComponent from './productComponent';
+import PostComponent from './postComponent';
 import SelectBrandComponent from './../Brands/selectBrandComponent';
 import * as action from './action';
 import * as actionTags from './../Tags/action';
 import * as actionBrands from './../Brands/action';
+import * as actionProducts from './../Products/action';
 import styles from './styles.css';
-import NewProductEntry from './newProductEntry';
+import NewProductEntry from './../Products/newProductEntry';
 import ScaledImage from './../../components/ScaledImage';
+import BrandSelector from './../../components/BrandSelector';
+import ProductSelector from './../../components/ProductSelector';
 
-class Products extends Component {
+class Posts extends Component {
   // Fetching data method for both server/client side rendering
   static fetchData(dispatch) {
     return Promise.all([
       dispatch(action.fetchDataIfNeeded()),
       dispatch(actionTags.fetchDataIfNeeded()),
       dispatch(actionBrands.fetchDataIfNeeded()),
+      dispatch(actionProducts.fetchDataIfNeeded()),
     ]);
   }
-  static addProduct(dispatch, newProduct) {
+  static addProduct(dispatch, newPost) {
     return Promise.all([
-      dispatch(action.addProduct(newProduct)),
+      dispatch(action.addPost(newPost)),
     ]);
   }
   static removeProduct(dispatch, index) {
     return Promise.all([
-      dispatch(action.removeProduct(index)),
+      dispatch(action.removePost(index)),
     ]);
   }
   static deleteProduct(dispatch, id, index) {
     return Promise.all([
-      dispatch(action.deleteProduct(id, index)),
+      dispatch(action.deletePost(id, index)),
     ]);
   }
 
   static updateProduct(dispatch, value) {
     return Promise.all([
-      dispatch(action.updateProduct(value)),
+      dispatch(action.updatePost(value)),
     ]);
   }
   static createProduct(dispatch, index, value) {
     // the index is the position in the current tags redux. Not the id on db.
     return Promise.all([
-      dispatch(action.createProduct(index, value)),
+      dispatch(action.createPost(index, value)),
     ]);
   }
   constructor() {
@@ -86,7 +90,7 @@ class Products extends Component {
   componentDidMount() {
     const { dispatch, params } = this.props;
     // Fetching data for client side rendering
-    Products.fetchData(dispatch, params);
+    Posts.fetchData(dispatch, params);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -127,10 +131,10 @@ class Products extends Component {
     const id = product.id;
     if (id) {
       // This is an existing tag, just update it.
-      Products.updateProduct(dispatch, newValue);
+      Posts.updateProduct(dispatch, newValue);
     } else {
       // This is a new tag, create it.
-      Products.createProduct(dispatch, product.index, newValue);
+      Posts.createProduct(dispatch, product.index, newValue);
     }
   }
 
@@ -141,10 +145,10 @@ class Products extends Component {
     const index = newProduct.index;
     if (id) {
       // This is an existing Product, just update it.
-      Products.updateProduct(dispatch, newProduct);
+      Posts.updateProduct(dispatch, newProduct);
     } else {
       // This is a new Product, create it.
-      Products.createProduct(dispatch, index, newProduct);
+      Posts.createProduct(dispatch, index, newProduct);
     }
     this.setState({
       isEdited: !this.state.isEdited,
@@ -156,10 +160,10 @@ class Products extends Component {
     const id = product.id;
     if (id) {
       // This is an existing tag, just update it.
-      Products.deleteProduct(dispatch, id, product.index);
+      Posts.deleteProduct(dispatch, id, product.index);
     } else {
       // This is a new tag, create it.
-      Products.removeProduct(dispatch, product.index);
+      Posts.removeProduct(dispatch, product.index);
     }
   }
 
@@ -310,6 +314,7 @@ class Products extends Component {
       isTagNewProductModalOpen: !this.state.isTagNewProductModalOpen,
     });
   }
+
   addTagToNewProduct(tag) {
     let found = false;
     const index = this.state.currentNewProductIndex;
@@ -364,7 +369,7 @@ class Products extends Component {
     const { dispatch } = this.props;
     let i = 0;
     for (; i < this.state.newProducts.length; i += 1) {
-      Products.addProduct(
+      Posts.addProduct(
         dispatch,
         {
           ...this.state.newProducts[i],
@@ -377,7 +382,7 @@ class Products extends Component {
   }
 
   render() {
-    if (this.props.products) {
+    if (this.props.posts) {
       return (
         <div>
           <Breadcrumb>
@@ -385,6 +390,8 @@ class Products extends Component {
             <BreadcrumbItem active>
               <Button color="success" onClick={this.toggleCreateModal} size="sm">Add Product</Button>
             </BreadcrumbItem>
+            <BrandSelector />
+            <ProductSelector />
           </Breadcrumb>
           <Modal
             className={styles.bigModal}
@@ -535,7 +542,7 @@ class Products extends Component {
             <thead>
               <tr>
                 <th width="40ox">id</th>
-                <th width="64px">image</th>
+                <th width="100px">image</th>
                 <th width="130px">brand</th>
                 <th width="200px">tags</th>
                 <th width="120px">name</th>
@@ -543,11 +550,11 @@ class Products extends Component {
               </tr>
             </thead>
             <tbody>
-              {this.props.products.map((product, index) => (
-                <ProductComponent
+              {this.props.posts.map((post, index) => (
+                <PostComponent
                   key={index}
                   index={index}
-                  product={product}
+                  post={post}
                   brands={this.props.brands}
                   deepEditHandler={this.deepEditHandler}
                   saveHandler={this.saveHandler}
@@ -563,18 +570,19 @@ class Products extends Component {
   }
 }
 
-Products.propTypes = {
+Posts.propTypes = {
   dispatch: PropTypes.func,
   params: PropTypes.objectOf(PropTypes.string),
-  products: PropTypes.arrayOf(PropTypes.object),
   tags: PropTypes.arrayOf(PropTypes.object),
   brands: PropTypes.arrayOf(PropTypes.object),
+  posts: PropTypes.arrayOf(PropTypes.object),
 };
 
 const mapStateToProps = state => ({
   products: state.get('products').products,
   tags: state.get('tags').tags,
   brands: state.get('brands').brands,
+  posts: state.get('posts').posts,
 });
 
-export default connect(mapStateToProps)(Products);
+export default connect(mapStateToProps)(Posts);

@@ -16,7 +16,7 @@ export default class Uploader extends React.Component {
       maxFiles: this.props.maxFiles,
       params: {
         myParam: 'Hello from a parameter!',
-        sizes: JSON.stringify([{ width: 200, height: 200 }, { width: 500, height: 500 }]),
+        sizes: JSON.stringify(this.props.sizes),
       },
     };
 
@@ -82,6 +82,7 @@ export default class Uploader extends React.Component {
 }
 Uploader.defaultProps = {
   maxFiles: 1,
+  sizes: [{ width: 200, height: 200 }, { width: 500, height: 500 }],
 };
 
 Uploader.propTypes = {
@@ -89,4 +90,5 @@ Uploader.propTypes = {
   callBackFileUploaded: PropTypes.func,
   callBackFileRemoved: PropTypes.func,
   callBackFileAdded: PropTypes.func,
+  sizes: PropTypes.arrayOf(PropTypes.object),
 };

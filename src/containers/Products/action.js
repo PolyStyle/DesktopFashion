@@ -22,22 +22,24 @@ export const fetchData = axios => (dispatch) => {
 };
 
 /* istanbul ignore next */
-export const addProduct = () => (dispatch) => {
-  dispatch({ type: ADD_PRODUCT });
+export const addProduct = newProduct => (dispatch, getState, axios) => {
+  axios.post(API_URL, newProduct)
+  .then((res) => {
+    dispatch({ type: ADD_PRODUCT, newProduct: res.data });
+  })
+  .catch((err) => {
+    dispatch({ type: PRODUCTS_FAIL, err });
+  });
 };
 
 export const updateProduct = newProduct => (dispatch, getState, axios) => {
-  console.log('new product :', newProduct);
   const id = newProduct.id;
   const endPoint = API_URL + id;
   return axios.put(endPoint, newProduct)
   .then(() => {
-    console.log('it went well!');
     dispatch({ type: UPDATE_PRODUCT, id, newProduct });
   })
   .catch((err) => {
-    console.log('there was an error');
-    console.log(err);
     dispatch({ type: PRODUCTS_FAIL, err });
   });
 };
@@ -45,7 +47,6 @@ export const updateProduct = newProduct => (dispatch, getState, axios) => {
 export const createProduct = (index, newProduct) => (dispatch, getState, axios) => {
   axios.post(API_URL, newProduct)
   .then((res) => {
-    console.log('DONE, now lets update');
     dispatch({
       type: CREATE_PRODUCT,
       id: res.data.id,
@@ -54,20 +55,17 @@ export const createProduct = (index, newProduct) => (dispatch, getState, axios) 
     });
   })
   .catch((err) => {
-    console.log(err);
     dispatch({ type: PRODUCTS_FAIL, err });
   });
 };
 
 export const deleteProduct = (id, index) => (dispatch, getState, axios) => {
-  console.log('action received delete brand invoked');
   const endPoint = API_URL + id;
   return axios.delete(endPoint)
   .then(() => {
     dispatch({ type: REMOVE_PRODUCT, index });
   })
   .catch((err) => {
-    console.log(err);
     dispatch({ type: PRODUCTS_FAIL, err });
   });
 };

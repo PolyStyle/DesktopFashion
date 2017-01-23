@@ -1,21 +1,21 @@
 import React, { PropTypes } from 'react';
 import { Button, Input, Badge } from 'reactstrap';
-import SelectBrandComponent from './../Brands/selectBrandComponent';
 import ScaledImage from './../../components/ScaledImage';
 import styles from './styles.css';
 
 
-class ProductComponent extends React.Component {
+class PostComponent extends React.Component {
 
   constructor(props) {
+    console.log('CREATE POST COMPONENT');
     super(props);
     this.state = {
       dropdownBrandOpen: false,
       isEdited: false,
-      product: {
-        ...props.product,
+      post: {
+        ...props.post,
         tempValues: {
-          ...props.product,
+          ...props.post,
         },
         index: props.index,
       },
@@ -35,11 +35,12 @@ class ProductComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log(this.props.index);
     this.setState({
       ...nextProps,
-      product: {
-        ...nextProps.product,
-        tempValues: nextProps.product,
+      post: {
+        ...nextProps.post,
+        tempValues: nextProps.post,
         index: nextProps.index,
       },
       index: nextProps.index,
@@ -56,11 +57,11 @@ class ProductComponent extends React.Component {
 
   handleChange(event) {
     this.setState({
-      product: {
-        ...this.state.product,
+      post: {
+        ...this.state.post,
         index: this.props.index,
         tempValues: {
-          ...this.state.product.tempValues,
+          ...this.state.post.tempValues,
           [event.target.name]: event.target.value,
         },
       },
@@ -69,10 +70,10 @@ class ProductComponent extends React.Component {
 
   changeCurrentBrand(brand) {
     this.setState({
-      product: {
-        ...this.state.product,
+      post: {
+        ...this.state.post,
         tempValues: {
-          ...this.state.product.tempValues,
+          ...this.state.post.tempValues,
           Brand: brand,
         },
       },
@@ -81,12 +82,12 @@ class ProductComponent extends React.Component {
 
   removeTag(index) {
     this.setState({
-      product: {
-        ...this.state.product,
+      post: {
+        ...this.state.post,
         tempValues: {
-          ...this.state.product.tempValues,
-          Tags: this.state.product.tempValues.Tags.slice(0, index)
-            .concat(this.state.product.tempValues.Tags.slice(index + 1)),
+          ...this.state.post.tempValues,
+          Tags: this.state.post.tempValues.Tags.slice(0, index)
+            .concat(this.state.post.tempValues.Tags.slice(index + 1)),
         },
       },
     });
@@ -98,7 +99,7 @@ class ProductComponent extends React.Component {
       isEdited: false,
       isDeleting: false,
     });
-    this.props.saveHandler(this.state.product);
+    this.props.saveHandler(this.state.post);
   }
   handleCancel() {
     this.setState({
@@ -115,11 +116,11 @@ class ProductComponent extends React.Component {
   }
 
   handleDelete() {
-    this.props.deleteHandler(this.state.product);
+    this.props.deleteHandler(this.state.post);
   }
 
   handleDeepEdit() {
-    this.props.deepEditHandler(this.state.product);
+    this.props.deepEditHandler(this.state.post);
   }
 
   toggleBrandDropDown() {
@@ -133,53 +134,39 @@ class ProductComponent extends React.Component {
     // use the classSet addon to concat an array of class names together
     return (
       <tr>
-        <th scope="row">{this.props.product.id || <Badge color="default" pill>new</Badge>}</th>
+        <th scope="row">{this.props.post.id || <Badge color="default" pill>new</Badge>}</th>
         <td>
-          <ScaledImage styles={styles.avatarTable} id={this.props.product.ImageId} />
+          <ScaledImage styles={styles.postImage} id={this.props.post.ImageId} />
         </td>
-        <td>
-          {!this.state.isEdited && this.props.product.Brand.displayName}
-          {this.state.isEdited &&
-            <SelectBrandComponent
-              brands={this.props.brands}
-              selectedItem={this.props.product.Brand}
-              onChange={this.changeCurrentBrand}
-            />
-          }
-        </td>
-        <td>
-          {!this.state.isEdited && this.state.product.Tags.map((tag, index) => (
-            <span key={index} className={styles.tagLabel}>{tag.displayName}</span>
+        <td className={styles.tdStyle}>
+          Brands: <br />
+          {this.state.post.Brands.map((brand, index) => (
+            <span key={index} className={styles.tagLabel}>{brand.displayName}</span>
           ))}
-          {this.state.isEdited && this.state.product.tempValues.Tags.map((tag, index) => (
-            <Button
-              size="sm"
-              key={index}
-              className={styles.tagLabelEdit}
-              onClick={() => this.removeTag(index)}
-            >
-                x {tag.displayName}
-            </Button>
+        </td>
+        <td className={styles.tdStyle}>
+          Tags: <br />
+          {this.state.post.Tags.map((tag, index) => (
+            <span key={index} className={styles.tagLabel}>{tag.displayName}</span>
           ))}
           {this.state.isEdited && <Button size="sm" color="primary" className={styles.tagLabelAdd}> Add Tag </Button>}
         </td>
-        <td>
-          {!this.state.isEdited && this.state.product.displayName}
+        <td className={styles.tdStyle}>
+          {!this.state.isEdited && this.state.post.description}
           {this.state.isEdited &&
             <Input
-              name="displayName"
+              name="description"
               type="text"
               size="sm"
-              placeholder={this.state.product.displayName}
-              value={this.state.product.tempValues.displayName}
+              placeholder={this.state.post.description}
+              value={this.state.post.tempValues.description}
               onChange={this.handleChange}
             />}
         </td>
         <td>
           {!this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleDeepEdit} color="primary" size="sm">Edit</Button>}
-          {!this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleEdit} color="primary" size="sm">Quick Edit</Button>}
           {this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleCancel} color="secondary" size="sm">Cancel</Button>}
-          {!this.state.isEdited && !this.props.product.id && <Button onClick={this.handleSave} color="success" size="sm">Save</Button>}
+          {!this.state.isEdited && !this.props.post.id && <Button onClick={this.handleSave} color="success" size="sm">Save</Button>}
           {this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleSave} color="success" size="sm">Save</Button>}
           {this.state.isEdited && !this.state.isDeleting && <Button onClick={this.handleAttemptDelete} color="danger" size="sm">Delete</Button>}
           {this.state.isDeleting && <Button onClick={this.handleCancel} color="warning" size="sm"> Cancel </Button>}
@@ -190,8 +177,8 @@ class ProductComponent extends React.Component {
   }
 }
 
-ProductComponent.propTypes = {
-  product: PropTypes.shape({
+PostComponent.propTypes = {
+  post: PropTypes.shape({
     id: PropTypes.number,
     displayName: PropTypes.string,
     picture: PropTypes.string,
@@ -203,8 +190,7 @@ ProductComponent.propTypes = {
   saveHandler: PropTypes.func,
   deleteHandler: PropTypes.func,
   deepEditHandler: PropTypes.func,
-  brands: PropTypes.arrayOf(PropTypes.object),
   // tags: PropTypes.arrayOf(PropTypes.object),
 };
 
-export default ProductComponent;
+export default PostComponent;
