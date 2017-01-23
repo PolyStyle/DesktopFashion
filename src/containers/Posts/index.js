@@ -1,18 +1,18 @@
 import React, { Component, PropTypes } from 'react';
-import { Table, Button, Breadcrumb, BreadcrumbItem, Card, CardBlock,
-  Input, Modal, ModalBody, Container, Row, Col } from 'reactstrap';
+import { Table, Button, Breadcrumb, BreadcrumbItem,
+  Input, Modal, Container, Row, Col } from 'reactstrap';
 import { connect } from 'react-redux';
 import PostComponent from './postComponent';
-import SelectBrandComponent from './../Brands/selectBrandComponent';
 import * as action from './action';
 import * as actionTags from './../Tags/action';
 import * as actionBrands from './../Brands/action';
 import * as actionProducts from './../Products/action';
 import styles from './styles.css';
-import NewProductEntry from './../Products/newProductEntry';
 import ScaledImage from './../../components/ScaledImage';
 import BrandSelector from './../../components/BrandSelector';
 import ProductSelector from './../../components/ProductSelector';
+import TagSelector from './../../components/TagSelector';
+import Uploader from './../../components/Uploader';
 
 class Posts extends Component {
   // Fetching data method for both server/client side rendering
@@ -40,12 +40,12 @@ class Posts extends Component {
     ]);
   }
 
-  static updateProduct(dispatch, value) {
+  static updatePost(dispatch, value) {
     return Promise.all([
       dispatch(action.updatePost(value)),
     ]);
   }
-  static createProduct(dispatch, index, value) {
+  static createPost(dispatch, index, value) {
     // the index is the position in the current tags redux. Not the id on db.
     return Promise.all([
       dispatch(action.createPost(index, value)),
@@ -73,7 +73,9 @@ class Posts extends Component {
     this.toggleCreateModal = this.toggleCreateModal.bind(this);
     this.toggleEditModal = this.toggleEditModal.bind(this);
     this.toggleTagModal = this.toggleTagModal.bind(this);
-    this.changeCurrentBrand = this.changeCurrentBrand.bind(this);
+    this.changeCurrentProducts = this.changeCurrentProducts.bind(this);
+    this.changeCurrentBrands = this.changeCurrentBrands.bind(this);
+    this.changeCurrentTags = this.changeCurrentTags.bind(this);
     this.handleChangeNewProduct = this.handleChangeNewProduct.bind(this);
     this.selectCurrentNewProduct = this.selectCurrentNewProduct.bind(this);
     this.addNewProductSameTemplate = this.addNewProductSameTemplate.bind(this);
@@ -85,6 +87,8 @@ class Posts extends Component {
     this.onChangeHandlerNewProduct = this.onChangeHandlerNewProduct.bind(this);
     this.saveNewProducts = this.saveNewProducts.bind(this);
     this.changeNewProductBrand = this.changeNewProductBrand.bind(this);
+    this.cancelCurrentPostImage = this.cancelCurrentPostImage.bind(this);
+    this.imageCurrentProductUploadedHandler = this.imageCurrentProductUploadedHandler.bind(this);
   }
 
   componentDidMount() {
@@ -95,7 +99,7 @@ class Posts extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.state.isEdited) {
-      const id = this.state.currentProduct.id;
+      const id = this.state.currentPost.id;
       let product = null;
       let i = 0;
       for (; i < nextProps.products.length; i += 1) {
@@ -108,7 +112,7 @@ class Posts extends Component {
       }
 
       this.setState({
-        currentProduct: {
+        currentPost: {
           ...product,
           tempValues: product,
         },
@@ -140,15 +144,15 @@ class Posts extends Component {
 
   saveDetailedHandler() {
     const { dispatch } = this.props;
-    const newProduct = this.state.currentProduct.tempValues;
-    const id = newProduct.id;
-    const index = newProduct.index;
+    const newPost = this.state.currentPost.tempValues;
+    const id = newPost.id;
+    const index = newPost.index;
     if (id) {
       // This is an existing Product, just update it.
-      Posts.updateProduct(dispatch, newProduct);
+      Posts.updatePost(dispatch, newPost);
     } else {
       // This is a new Product, create it.
-      Posts.createProduct(dispatch, index, newProduct);
+      Posts.createPost(dispatch, index, newPost);
     }
     this.setState({
       isEdited: !this.state.isEdited,
@@ -170,7 +174,7 @@ class Posts extends Component {
   deepEditHandler(product) {
     this.setState({
       isEdited: true,
-      currentProduct: {
+      currentPost: {
         ...product,
         tempValues: product,
       },
@@ -179,10 +183,10 @@ class Posts extends Component {
 
   handleChange(event) {
     this.setState({
-      currentProduct: {
-        ...this.state.currentProduct,
+      currentPost: {
+        ...this.state.currentPost,
         tempValues: {
-          ...this.state.currentProduct.tempValues,
+          ...this.state.currentPost.tempValues,
           [event.target.name]: event.target.value,
         },
       },
@@ -237,18 +241,23 @@ class Posts extends Component {
 
   toggleCreateModal() {
     this.setState({
-      isCreating: !this.state.isCreating,
-      newProductsParameters: {},
-      newProducts: [
-        {
+      isEdited: !this.state.isEdited,
+      currentPost: {
+        index: this.props.posts.length,
+        productCode: '',
+        Tags: [],
+        Brands: [],
+        Products: [],
+        ImageId: -1,
+        tempValues: {
+          index: this.props.posts.length,
           productCode: '',
           Tags: [],
-          Brand: null,
-          isEditing: true,
-          tempValues: {},
+          Brands: [],
+          Products: [],
+          ImageId: -1,
         },
-      ],
-      currentNewProductIndex: 0,
+      },
     });
   }
 
@@ -260,24 +269,63 @@ class Posts extends Component {
 
   removeTag(index) {
     this.setState({
-      currentProduct: {
-        ...this.state.currentProduct,
+      currentPost: {
+        ...this.state.currentPost,
         tempValues: {
-          ...this.state.currentProduct.tempValues,
-          Tags: this.state.currentProduct.tempValues.Tags.slice(0, index)
-            .concat(this.state.currentProduct.tempValues.Tags.slice(index + 1)),
+          ...this.state.currentPost.tempValues,
+          Tags: this.state.currentPost.tempValues.Tags.slice(0, index)
+            .concat(this.state.currentPost.tempValues.Tags.slice(index + 1)),
         },
       },
     });
   }
 
-  changeCurrentBrand(brand) {
+  removeBrand(index) {
     this.setState({
-      currentProduct: {
-        ...this.state.currentProduct,
+      currentPost: {
+        ...this.state.currentPost,
         tempValues: {
-          ...this.state.currentProduct.tempValues,
-          Brand: brand,
+          ...this.state.currentPost.tempValues,
+          Brands: this.state.currentPost.tempValues.Brands.slice(0, index)
+            .concat(this.state.currentPost.tempValues.Brands.slice(index + 1)),
+        },
+      },
+    });
+  }
+
+  changeCurrentBrands(brands) {
+    this.setState({
+      currentPost: {
+        ...this.state.currentPost,
+        tempValues: {
+          ...this.state.currentPost.tempValues,
+          Brands: brands,
+        },
+      },
+    });
+  }
+
+  changeCurrentTags(tags) {
+    this.setState({
+      currentPost: {
+        ...this.state.currentPost,
+        tempValues: {
+          ...this.state.currentPost.tempValues,
+          Tags: tags,
+        },
+      },
+    });
+  }
+
+  changeCurrentProducts(products) {
+    console.log('CHANGE CURRENT PRODUCTS');
+    console.log(products);
+    this.setState({
+      currentPost: {
+        ...this.state.currentPost,
+        tempValues: {
+          ...this.state.currentPost.tempValues,
+          Products: products,
         },
       },
     });
@@ -291,18 +339,18 @@ class Posts extends Component {
   addTag(tag) {
     let found = false;
     // check if tag exists already
-    for (let i = 0; i < this.state.currentProduct.tempValues.Tags.length; i += 1) {
-      if (this.state.currentProduct.tempValues.Tags[i].id === tag.id) {
+    for (let i = 0; i < this.state.currentPost.tempValues.Tags.length; i += 1) {
+      if (this.state.currentPost.tempValues.Tags[i].id === tag.id) {
         found = true;
       }
     }
     if (!found) {
       this.setState({
-        currentProduct: {
-          ...this.state.currentProduct,
+        currentPost: {
+          ...this.state.currentPost,
           tempValues: {
-            ...this.state.currentProduct.tempValues,
-            Tags: this.state.currentProduct.tempValues.Tags.concat([tag]),
+            ...this.state.currentPost.tempValues,
+            Tags: this.state.currentPost.tempValues.Tags.concat([tag]),
           },
         },
       });
@@ -381,6 +429,33 @@ class Posts extends Component {
     this.toggleCreateModal();
   }
 
+  cancelCurrentPostImage() {
+    console.log('CANCEL IMAGE');
+    this.setState({
+      currentPost: {
+        ...this.state.currentPost,
+        tempValues: {
+          ...this.state.currentPost.tempValues,
+          ImageId: -1,
+        },
+      },
+    });
+  }
+
+  imageCurrentProductUploadedHandler(file, response) {
+    const responseObject = JSON.parse(response);
+    this.setState({
+      currentPost: {
+        ...this.state.currentPost,
+        tempValues: {
+          ...this.state.currentPost.tempValues,
+          ImageId: responseObject.id,
+        },
+      },
+    });
+  }
+
+
   render() {
     if (this.props.posts) {
       return (
@@ -388,154 +463,106 @@ class Posts extends Component {
           <Breadcrumb>
             <BreadcrumbItem active>Products</BreadcrumbItem>
             <BreadcrumbItem active>
-              <Button color="success" onClick={this.toggleCreateModal} size="sm">Add Product</Button>
+              <Button color="success" onClick={this.toggleCreateModal} size="sm">Add Post</Button>
             </BreadcrumbItem>
-            <BrandSelector />
-            <ProductSelector />
           </Breadcrumb>
           <Modal
+            isOpen={this.state.isEdited}
+            toggle={this.toggleEditModal}
             className={styles.bigModal}
-            isOpen={this.state.isCreating}
-            toggle={this.toggleCreateModal}
           >
-            {this.state.isCreating &&
-              <Container>
-                <Row className={styles.rowCentered}>
-                  <Col>
-                    <Button size="sm" color="success" onClick={this.saveNewProducts}> Save All </Button>
-                    <Button size="sm" color="danger" onClick={this.toggleCreateModal}> Cancel All </Button>
-                  </Col>
-                </Row>
-                <hr />
+            {this.state.isEdited &&
+              <Container className={styles.editMode}>
                 <Row>
-                  <Col>
-                    Display Name
-                    <Input
-                      type="text"
+                  <Col className={styles.imageColumn}>
+                    <Button
                       size="sm"
-                      placeholder={this.state.newProductsParameters.displayName}
-                      value={this.state.newProductsParameters.displayName}
-                      onChange={this.handleChangeNewProduct}
-                      name="displayName"
-                    />
-                  </Col>
-                  <Col>
-                    Brand
-                    <SelectBrandComponent
-                      brands={this.props.brands}
-                      onChange={this.changeNewProductBrand}
-                    />
-                  </Col>
-                  <Col>
-                    Product code
-                    <Input
-                      type="text"
+                      onClick={this.expandPictureInModal}
+                      className={styles.absoluteButton}
+                      color="primary"
+                    >
+                      Expand Image
+                    </Button>
+                    <Button
                       size="sm"
-                      placeholder={this.state.newProductsParameters.productCode}
-                      value={this.state.newProductsParameters.productCode}
-                      onChange={this.handleChangeNewProduct}
-                      name="productCode"
-                    />
+                      onClick={this.cancelCurrentPostImage}
+                      className={styles.absoluteButtonSecondRow}
+                      color="danger"
+                    >
+                      Cancel Image
+                    </Button>
+                    {this.state.currentPost.tempValues.ImageId >= 0 &&
+                      <ScaledImage
+                        styles={
+                          this.state.isPictureInModalExpanded ?
+                          styles.avatarBig :
+                          styles.avatarSmall
+                        }
+                        id={this.state.currentPost.tempValues.ImageId}
+                        width={300}
+                      />
+                    }
+                    {this.state.currentPost.tempValues.ImageId < 0 &&
+                      <div className={styles.uploadCurrentProductPicture}>
+                        <Uploader
+                          callBackFileUploaded={this.imageCurrentProductUploadedHandler}
+                          maxFiles={1}
+                          sizes={[{ width: 1000, height: 1500 }, { width: 2000, height: 3000 }]}
+                        />
+                      </div>
+                    }
                   </Col>
-                </Row>
-                <hr />
-                <Row>
-                  Specific Product Informations
-                </Row>
-                {this.state.newProducts.map((product, index) =>
-                  <NewProductEntry
-                    isEditing={index === this.state.currentNewProductIndex}
-                    key={index}
-                    index={index}
-                    product={product}
-                    duplicateProductHandler={this.duplicateProductHandler}
-                    editAnotherElementHandler={this.editAnotherElementHandler}
-                    onChangeHandler={this.onChangeHandlerNewProduct}
-                    removeProductHandler={this.removeNewProduct}
-                  />,
-                )}
-                <Row className={styles.rowCentered}>
                   <Col>
-                    <Button size="sm" color="success" onClick={this.saveNewProducts}> Save All </Button>
-                    <Button size="sm" color="danger" onClick={this.toggleCreateModal}> Cancel All </Button>
+                    <span> Description: </span>
+                    <Input
+                      type="textarea"
+                      size="sm"
+                      placeholder={this.state.currentPost.description}
+                      value={this.state.currentPost.tempValues.description || ''}
+                      onChange={this.handleChange}
+                      name="description"
+                    />
+                    <hr />
+                    Current Products: <br />
+                    {this.state.currentPost.tempValues.Products.map((product, index) => (
+                      <ScaledImage key={index} styles={styles.productImage} id={product.ImageId} />
+                    ))}
+                    <ProductSelector
+                      currentAddedProducts={this.state.currentPost.tempValues.Products}
+                      onProductSaveHandler={this.changeCurrentProducts}
+                    />
+                    <hr />
+                    <span> Brands: </span>
+                    <br />
+                    {this.state.currentPost.tempValues.Brands.map((brand, index) => (
+                      <Button size="sm" key={index} color="secondary" onClick={() => this.removeBrand(index)}>
+                      x {brand.displayName}
+                      </Button>
+                    ))}
+                    <BrandSelector
+                      currentAddedBrands={this.state.currentPost.tempValues.Brands}
+                      onBrandSaveHandler={this.changeCurrentBrands}
+                    />
+                    <hr />
+                    <span> Tags: </span>
+                    <br />
+                    {this.state.currentPost.tempValues.Tags.map((tag, index) => (
+                      <Button size="sm" key={index} color="secondary" onClick={() => this.removeTag(index)}>
+                      x {tag.displayName}
+                      </Button>
+                    ))}
+                    <TagSelector
+                      currentAddedTags={this.state.currentPost.tempValues.Tags}
+                      onTagSaveHandler={this.changeCurrentTags}
+                    />
+                    <br />
+                    <hr />
+                    <br />
+                    <Button onClick={this.handleCancel} color="warning" size="sm">Cancel</Button>
+                    <Button onClick={this.saveDetailedHandler} color="success" size="sm">Save</Button>
                   </Col>
                 </Row>
               </Container>
-            }
-          </Modal>
-          <Modal isOpen={this.state.isEdited} toggle={this.toggleEditModal}>
-            {this.state.isEdited &&
-              <Card>
-                <Button size="sm" onClick={this.expandPictureInModal}>Expand Image</Button>
-                <ScaledImage
-                  styles={
-                    this.state.isPictureInModalExpanded ? styles.avatarBig : styles.avatarSmall
-                  }
-                  id={this.state.currentProduct.ImageId}
-                  width={500}
-                />
-                <CardBlock>
-                  <span> Display Name </span>
-                  <Input
-                    type="text"
-                    size="sm"
-                    placeholder={this.state.currentProduct.displayName}
-                    value={this.state.currentProduct.tempValues.displayName || ''}
-                    onChange={this.handleChange}
-                    name="displayName"
-                  />
-                  <span> Product Code </span>
-                  <Input
-                    size="sm"
-                    type="text"
-                    placeholder={this.state.currentProduct.productCode}
-                    value={this.state.currentProduct.tempValues.productCode || ''}
-                    name="productCode"
-                    onChange={this.handleChange}
-                  />
-                  <span> Brand </span>
-                  <SelectBrandComponent
-                    brands={this.props.brands}
-                    selectedItem={this.state.currentProduct.Brand}
-                    onChange={this.changeCurrentBrand}
-                  />
-                  <span> Tags </span>
-                  <br />
-                  {this.state.currentProduct.tempValues.Tags.map((tag, index) => (
-                    <Button size="sm" key={index} color="secondary" onClick={() => this.removeTag(index)}>
-                    x {tag.displayName}
-                    </Button>
-                  ))}
-                  <Button size="sm" color="success" onClick={this.toggleTagModal}> Add Tag </Button>
-                  <br />
-                  <span> Avatar </span>
-                  <Input
-                    size="sm"
-                    type="text"
-                    placeholder={this.state.currentProduct.picture}
-                    value={this.state.currentProduct.tempValues.picture}
-                    label="Picture (avatar)"
-                    name="picture"
-                    onChange={this.handleChange}
-                  />
-                  <br />
-                  <Button onClick={this.handleCancel} color="warning" size="sm">Cancel</Button>
-                  <Button onClick={this.saveDetailedHandler} color="success" size="sm">Save</Button>
-                  <Modal isOpen={this.state.isTagModalOpen} toggle={this.toggleTagModal}>
-                    <ModalBody>
-                      {this.props.tags.map((tag, index) => (
-                        <Button key={index} size="sm" color="secondary" onClick={() => this.addTag(tag)}>
-                        + {tag.displayName}
-                        </Button>
-                      ))}
-                      <br />
-                      <Button size="sm" color="danger" onClick={this.toggleTagModal}>
-                        Close
-                      </Button>
-                    </ModalBody>
-                  </Modal>
-                </CardBlock>
-              </Card>
             }
           </Modal>
           <Table striped size="sm">
@@ -544,9 +571,10 @@ class Posts extends Component {
                 <th width="40ox">id</th>
                 <th width="100px">image</th>
                 <th width="130px">brand</th>
-                <th width="200px">tags</th>
-                <th width="120px">name</th>
-                <th width="300px">edits</th>
+                <th width="120px">tags</th>
+                <th width="220px">products</th>
+                <th width="120px">description</th>
+                <th width="100px">edits</th>
               </tr>
             </thead>
             <tbody>
@@ -573,14 +601,12 @@ class Posts extends Component {
 Posts.propTypes = {
   dispatch: PropTypes.func,
   params: PropTypes.objectOf(PropTypes.string),
-  tags: PropTypes.arrayOf(PropTypes.object),
   brands: PropTypes.arrayOf(PropTypes.object),
   posts: PropTypes.arrayOf(PropTypes.object),
 };
 
 const mapStateToProps = state => ({
   products: state.get('products').products,
-  tags: state.get('tags').tags,
   brands: state.get('brands').brands,
   posts: state.get('posts').posts,
 });

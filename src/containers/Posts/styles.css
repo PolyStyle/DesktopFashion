@@ -3,7 +3,7 @@ td {
 }
 .avatarSmall {
   width: 100%;
-  height: 200px;
+  height: 400px;
   object-fit: cover;
 }
 
@@ -131,4 +131,39 @@ td {
 }
 .tdStyle {
   border-right: 1px solid #efefef;
+}
+
+.productImage {
+  width: 80px;
+  height: 80px;
+  border-color: 1px solid #aaa;
+  border-radius: 40px;
+}
+
+.imageColumn{
+  padding: 0px !important;
+  width: 400px !important;
+  max-width: 400px !important;
+}
+.absoluteButton{
+  position: absolute;
+}
+.absoluteButtonSecondRow{
+  position: absolute;
+  right: 0px;
+}
+.editMode{
+  font-size: 12px;
+}
+.uploadCurrentProductPicture{
+  margin-top: 100px;
+  margin-left: 100px;
+}
+.uploadCurrentProductPicture{
+  background-color: #ddd;
+  width: 200px;
+  height: 200px;
+  border-radius: 100px;
+  padding-left: 58px;
+  padding-top: 58px;
 }

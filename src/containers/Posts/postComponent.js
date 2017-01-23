@@ -7,7 +7,6 @@ import styles from './styles.css';
 class PostComponent extends React.Component {
 
   constructor(props) {
-    console.log('CREATE POST COMPONENT');
     super(props);
     this.state = {
       dropdownBrandOpen: false,
@@ -35,7 +34,6 @@ class PostComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log(this.props.index);
     this.setState({
       ...nextProps,
       post: {
@@ -150,6 +148,13 @@ class PostComponent extends React.Component {
             <span key={index} className={styles.tagLabel}>{tag.displayName}</span>
           ))}
           {this.state.isEdited && <Button size="sm" color="primary" className={styles.tagLabelAdd}> Add Tag </Button>}
+        </td>
+        <td className={styles.tdStyle}>
+          Products:
+          <br />
+          {this.state.post.Products.map((product, index) => (
+            <ScaledImage key={index} styles={styles.productImage} id={product.ImageId} />
+          ))}
         </td>
         <td className={styles.tdStyle}>
           {!this.state.isEdited && this.state.post.description}

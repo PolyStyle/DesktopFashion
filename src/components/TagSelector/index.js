@@ -19,6 +19,13 @@ class TagSelector extends React.Component {
     this.toggleTagModal = this.toggleTagModal.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      addedTags: nextProps.currentAddedTags,
+    });
+  }
+
+
   onSaveAll() {
     this.setState({
       isTagModalOpen: false,

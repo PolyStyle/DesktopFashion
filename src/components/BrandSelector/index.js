@@ -18,6 +18,12 @@ class BrandSelector extends React.Component {
     this.onCancelAll = this.onCancelAll.bind(this);
     this.toggleBrandModal = this.toggleBrandModal.bind(this);
   }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      addedBrands: nextProps.currentAddedBrands,
+    });
+  }
+
 
   onSaveAll() {
     this.setState({

@@ -198,7 +198,7 @@ class ProductSelector extends React.Component {
               <Container>
                 {this.state.addedProducts.map((product, index) => (
                   <Row className={styles.selectedRow} onClick={() => this.removeProduct(index)}>
-                    <Col>
+                    <Col className={styles.imageHolder}>
                       <ScaledImage styles={styles.imagePreview} id={product.ImageId} />
                     </Col>
                     <Col>
