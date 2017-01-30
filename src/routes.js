@@ -137,6 +137,24 @@ export default function createRoutes(store) {
         },
       },
       {
+        path: '/users',
+        getComponent(nextState, cb) {
+          const importModules = Promise.all([
+            System.import('./containers/Users'),
+            System.import('./containers/Users/reducer'),
+          ]);
+
+          const renderRoute = loadModule(cb);
+
+          importModules
+            .then(([Component, reducer]) => {
+              injectReducer(store, 'users', reducer.default);
+              renderRoute(Component);
+            })
+            .catch(errorLoading);
+        },
+      },
+      {
         path: '*',
         getComponent(location, cb) {
           System.import('./containers/NotFound')

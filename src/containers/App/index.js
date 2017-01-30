@@ -16,6 +16,7 @@ const App = ({ children }) => (
         <li><Link to={'/brands'}>Brands</Link></li>
         <li><Link to={'/products'}>Products</Link></li>
         <li><Link to={'/posts'}>Posts</Link></li>
+        <li><Link to={'/users'}>Users</Link></li>
       </ul>
     </div>
     {children}

@@ -1,0 +1,21 @@
+.avatar {
+  width: 128px;
+  height: 128px;
+  object-fit: cover;
+  border-radius: 64px;
+}
+
+.avatarSmall {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 32px;
+}
+.backgroundHeader{
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 250px;
+  background-size: cover;
+}

@@ -11,12 +11,14 @@ const API_URL = 'http://localhost:3000/products/';
 // Export this function for testing
 export const fetchData = axios => (dispatch) => {
   dispatch({ type: PRODUCTS_REQUESTED });
-
   return axios.get(API_URL)
     .then((res) => {
+      console.log('RECEIVED PRODUCTS');
       dispatch({ type: PRODUCTS_RECEIVED, data: res.data });
     })
     .catch((err) => {
+      console.log('ERRORE');
+      console.log(err);
       dispatch({ type: PRODUCTS_FAIL, err });
     });
 };

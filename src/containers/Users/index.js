@@ -2,44 +2,44 @@ import React, { Component, PropTypes } from 'react';
 import { Table, Button, Breadcrumb, BreadcrumbItem, Card, CardBlock,
   Container, Row, Col, Input } from 'reactstrap';
 import { connect } from 'react-redux';
-import BrandComponent from './brandComponent';
+import UserComponent from './userComponent';
 import * as action from './action';
 import styles from './styles.css';
 import Uploader from './../../components/Uploader';
 import ScaledImage from './../../components/ScaledImage';
 
-class Brands extends Component {
+class Users extends Component {
   // Fetching data method for both server/client side rendering
   static fetchData(dispatch) {
     return Promise.all([
       dispatch(action.fetchDataIfNeeded()),
     ]);
   }
-  static addBrand(dispatch) {
+  static addUser(dispatch) {
     return Promise.all([
-      dispatch(action.addBrand()),
+      dispatch(action.addUser()),
     ]);
   }
-  static removeBrand(dispatch, index) {
+  static removeUser(dispatch, index) {
     return Promise.all([
-      dispatch(action.removeBrand(index)),
+      dispatch(action.removeUser(index)),
     ]);
   }
-  static deleteBrand(dispatch, id, index) {
+  static deleteUser(dispatch, id, index) {
     return Promise.all([
-      dispatch(action.deleteBrand(id, index)),
+      dispatch(action.deleteUser(id, index)),
     ]);
   }
 
-  static updateBrand(dispatch, value) {
+  static updateUser(dispatch, value) {
     return Promise.all([
-      dispatch(action.updateBrand(value)),
+      dispatch(action.updateUser(value)),
     ]);
   }
-  static createBrand(dispatch, index, value) {
+  static createUser(dispatch, index, value) {
     // the index is the position in the current tags redux. Not the id on db.
     return Promise.all([
-      dispatch(action.createBrand(index, value)),
+      dispatch(action.createUser(index, value)),
     ]);
   }
   constructor() {
@@ -47,112 +47,111 @@ class Brands extends Component {
     this.state = {
       isEdited: false,
     };
-    this.addBrandHandler = this.addBrandHandler.bind(this);
+    this.addUserHandler = this.addUserHandler.bind(this);
     this.saveHandler = this.saveHandler.bind(this);
     this.deleteHandler = this.deleteHandler.bind(this);
     this.deepEditHandler = this.deepEditHandler.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.saveDetailedHandler = this.saveDetailedHandler.bind(this);
-    this.imageBrandBackgroundUploadedHandler = this.imageBrandBackgroundUploadedHandler.bind(this);
-    this.imageBrandAvatarUploadedHandler = this.imageBrandAvatarUploadedHandler.bind(this);
+    this.imageUserAvatarUploadedHandler = this.imageUserAvatarUploadedHandler.bind(this);
   }
 
   componentDidMount() {
     const { dispatch, params } = this.props;
     // Fetching data for client side rendering
-    Brands.fetchData(dispatch, params);
+    Users.fetchData(dispatch, params);
   }
 
   componentWillReceiveProps(nextProps) {
     console.log(this.state.isEdited);
     if (this.state.isEdited) {
-      const id = this.state.currentBrand.id;
-      let brand = null;
+      const id = this.state.currentUser.id;
+      let user = null;
       let i = 0;
-      for (; i < nextProps.brands.length; i += 1) {
-        if (nextProps.brands[i].id === id) {
-          brand = nextProps.brands[i];
+      for (; i < nextProps.users.length; i += 1) {
+        if (nextProps.users[i].id === id) {
+          user = nextProps.users[i];
         }
       }
-      if (!brand) {
+      if (!user) {
         return;
       }
 
       console.log('Next Props', nextProps);
       this.setState({
-        currentBrand: {
-          ...brand,
-          tempValues: brand,
+        currentUser: {
+          ...user,
+          tempValues: user,
         },
       });
     }
   }
 
-  addBrandHandler() {
+  addUserHandler() {
     const { dispatch } = this.props;
-    Brands.addBrand(dispatch);
+    Users.addUser(dispatch);
   }
 
-  saveHandler(brand) {
+  saveHandler(user) {
     const { dispatch } = this.props;
-    const newValue = brand.tempValues;
-    const id = brand.id;
+    const newValue = user.tempValues;
+    const id = user.id;
     if (id) {
       // This is an existing tag, just update it.
-      Brands.updateBrand(dispatch, newValue);
+      Users.updateUser(dispatch, newValue);
     } else {
       // This is a new tag, create it.
-      Brands.createBrand(dispatch, brand.index, newValue);
+      Users.createUser(dispatch, user.index, newValue);
     }
   }
 
   saveDetailedHandler() {
     const { dispatch } = this.props;
-    const newBrand = this.state.currentBrand.tempValues;
-    const id = newBrand.id;
-    const index = newBrand.index;
+    const newUser = this.state.currentUser.tempValues;
+    const id = newUser.id;
+    const index = newUser.index;
     console.log('-------');
     console.log(index);
     console.log('-------');
     if (id) {
-      // This is an existing brand, just update it.
-      Brands.updateBrand(dispatch, newBrand);
+      // This is an existing user, just update it.
+      Users.updateUser(dispatch, newUser);
     } else {
-      // This is a new brand, create it.
-      Brands.createBrand(dispatch, index, newBrand);
+      // This is a new user, create it.
+      Users.createUser(dispatch, index, newUser);
     }
   }
 
-  deleteHandler(brand) {
+  deleteHandler(user) {
     const { dispatch } = this.props;
-    const id = brand.id;
+    const id = user.id;
     if (id) {
       // This is an existing tag, just update it.
-      Brands.deleteBrand(dispatch, id, brand.index);
+      Users.deleteUser(dispatch, id, user.index);
     } else {
       // This is a new tag, create it.
-      console.log('trying to remove brand with index', brand.index);
-      Brands.removeBrand(dispatch, brand.index);
+      console.log('trying to remove user with index', user.index);
+      Users.removeUser(dispatch, user.index);
     }
   }
 
-  deepEditHandler(brand) {
+  deepEditHandler(user) {
     this.setState({
       isEdited: true,
-      currentBrand: {
-        ...brand,
-        tempValues: brand,
+      currentUser: {
+        ...user,
+        tempValues: user,
       },
     });
   }
 
   handleChange(event) {
     this.setState({
-      currentBrand: {
-        ...this.state.currentBrand,
+      currentUser: {
+        ...this.state.currentUser,
         tempValues: {
-          ...this.state.currentBrand.tempValues,
+          ...this.state.currentUser.tempValues,
           [event.target.name]: event.target.value,
         },
       },
@@ -165,34 +164,27 @@ class Brands extends Component {
     });
   }
 
-  imageBrandBackgroundUploadedHandler(file, response) {
+  imageUserAvatarUploadedHandler(file, response) {
     const responseObject = JSON.parse(response);
     this.setState({
-      currentBrand: {
-        ...this.state.currentBrand,
-        BackgroundImageId: responseObject.id,
-      },
-    });
-  }
-
-  imageBrandAvatarUploadedHandler(file, response) {
-    const responseObject = JSON.parse(response);
-    this.setState({
-      currentBrand: {
-        ...this.state.currentBrand,
-        AvatarImageId: responseObject.id,
+      currentUser: {
+        ...this.state.currentUser,
+        tempValues: {
+          ...this.state.currentUser.tempValues,
+          ImageId: responseObject.id,
+        },
       },
     });
   }
 
   render() {
-    if (this.props.brands) {
+    if (this.props.users) {
       return (
         <div>
           <Breadcrumb>
-            <BreadcrumbItem active>Brands</BreadcrumbItem>
+            <BreadcrumbItem active>Users</BreadcrumbItem>
             <BreadcrumbItem active>
-              <Button color="success" onClick={this.addBrandHandler} size="sm">Add Brand</Button>
+              <Button color="success" onClick={this.addUserHandler} size="sm">Add User</Button>
             </BreadcrumbItem>
           </Breadcrumb>
           {this.state.isEdited &&
@@ -204,22 +196,15 @@ class Brands extends Component {
                       <Container>
                         <Row>
                           <Col>
-                            <span> Upload background Image </span>
-                            <Uploader
-                              callBackFileUploaded={this.imageBrandBackgroundUploadedHandler}
-                              maxFiles={1}
-                              sizes={[
-                                { width: 320, height: 480 },
-                                { width: 640, height: 1136 },
-                                { width: 1242, height: 2208 },
-                                { width: 2000, height: 3000 },
-                              ]}
+                            <ScaledImage
+                              styles={styles.avatar}
+                              id={this.state.currentUser.ImageId}
                             />
                           </Col>
                           <Col>
                             <span> Upload avatar Image </span>
                             <Uploader
-                              callBackFileUploaded={this.imageBrandAvatarUploadedHandler}
+                              callBackFileUploaded={this.imageUserAvatarUploadedHandler}
                               maxFiles={1}
                               sizes={[
                                 { width: 320, height: 320 },
@@ -231,41 +216,14 @@ class Brands extends Component {
                           </Col>
                         </Row>
                       </Container>
-                      <ScaledImage
-                        styles={styles.backgroundHeader}
-                        id={this.state.currentBrand.BackgroundImageId}
-                      />
-                      <ScaledImage
-                        styles={styles.avatar}
-                        id={this.state.currentBrand.AvatarImageId}
-                      />
                       <span> Display Name </span>
                       <Input
                         type="text"
                         size="sm"
-                        placeholder={this.state.currentBrand.displayName}
-                        value={this.state.currentBrand.tempValues.displayName}
+                        placeholder={this.state.currentUser.displayName}
+                        value={this.state.currentUser.tempValues.displayName}
                         onChange={this.handleChange}
                         name="displayName"
-                      />
-                      <span> Background Header </span>
-                      <Input
-                        size="sm"
-                        type="text"
-                        placeholder={this.state.currentBrand.BackgroundImageId}
-                        value={this.state.currentBrand.tempValues.BackgroundImageId}
-                        name="headerBackground"
-                        onChange={this.handleChange}
-                      />
-                      <span> Avatar </span>
-                      <Input
-                        size="sm"
-                        type="text"
-                        placeholder={this.state.currentBrand.AvatarImageId}
-                        value={this.state.currentBrand.tempValues.AvatarImageId}
-                        label="Picture (avatar)"
-                        name="picture"
-                        onChange={this.handleChange}
                       />
                       <br />
                       <Button onClick={this.handleCancel} color="warning" size="sm">Cancel</Button>
@@ -286,11 +244,11 @@ class Brands extends Component {
               </tr>
             </thead>
             <tbody>
-              {this.props.brands.map((brand, index) => (
-                <BrandComponent
+              {this.props.users.map((user, index) => (
+                <UserComponent
                   key={index}
                   index={index}
-                  brand={brand}
+                  user={user}
                   deepEditHandler={this.deepEditHandler}
                   saveHandler={this.saveHandler}
                   deleteHandler={this.deleteHandler}
@@ -305,12 +263,12 @@ class Brands extends Component {
   }
 }
 
-Brands.propTypes = {
+Users.propTypes = {
   dispatch: PropTypes.func,
   params: PropTypes.objectOf(PropTypes.string),
-  brands: PropTypes.arrayOf(PropTypes.object),
+  users: PropTypes.arrayOf(PropTypes.object),
 };
 
-const mapStateToProps = state => ({ brands: state.get('brands').brands });
+const mapStateToProps = state => ({ users: state.get('users').users });
 
-export default connect(mapStateToProps)(Brands);
+export default connect(mapStateToProps)(Users);

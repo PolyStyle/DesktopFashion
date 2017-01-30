@@ -167,6 +167,12 @@ export default class NewProductEntry extends React.Component {
               callBackFileRemoved={this.imageRemovedHandler}
               callBackFileAdded={this.fileAddedHandler}
               maxFiles={1}
+              sizes={[
+                { width: 320, height: 480 },
+                { width: 640, height: 1136 },
+                { width: 1242, height: 2208 },
+                { width: 2000, height: 3000 },
+              ]}
             />
           }
         </Col>

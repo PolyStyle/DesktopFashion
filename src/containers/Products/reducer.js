@@ -52,6 +52,8 @@ export default (state = initialState, action) => {
       });
     }
     case PRODUCTS_RECEIVED:
+      console.log('REDUCER ---');
+      console.log(action.data);
       return {
         ...state,
         products: action.data,
