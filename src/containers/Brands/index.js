@@ -112,7 +112,9 @@ class Brands extends Component {
     const newBrand = this.state.currentBrand.tempValues;
     const id = newBrand.id;
     const index = newBrand.index;
+
     console.log('-------');
+    console.log(newBrand);
     console.log(index);
     console.log('-------');
     if (id) {
@@ -138,6 +140,7 @@ class Brands extends Component {
   }
 
   deepEditHandler(brand) {
+    console.log('EDIT BRAND', brand);
     this.setState({
       isEdited: true,
       currentBrand: {
@@ -171,6 +174,10 @@ class Brands extends Component {
       currentBrand: {
         ...this.state.currentBrand,
         BackgroundImageId: responseObject.id,
+        tempValues: {
+          ...this.state.currentBrand.tempValues,
+          BackgroundImageId: responseObject.id,
+        },
       },
     });
   }
@@ -181,6 +188,10 @@ class Brands extends Component {
       currentBrand: {
         ...this.state.currentBrand,
         AvatarImageId: responseObject.id,
+        tempValues: {
+          ...this.state.currentBrand.tempValues,
+          AvatarImageId: responseObject.id,
+        },
       },
     });
   }
@@ -254,7 +265,7 @@ class Brands extends Component {
                         type="text"
                         placeholder={this.state.currentBrand.BackgroundImageId}
                         value={this.state.currentBrand.tempValues.BackgroundImageId}
-                        name="headerBackground"
+                        name="BackgroundImageId"
                         onChange={this.handleChange}
                       />
                       <span> Avatar </span>
@@ -264,7 +275,7 @@ class Brands extends Component {
                         placeholder={this.state.currentBrand.AvatarImageId}
                         value={this.state.currentBrand.tempValues.AvatarImageId}
                         label="Picture (avatar)"
-                        name="picture"
+                        name="AvatarImageId"
                         onChange={this.handleChange}
                       />
                       <br />

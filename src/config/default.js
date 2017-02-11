@@ -3,7 +3,7 @@ module.exports = {
   port: process.env.NODE_PORT || 7001,
   app: {
     htmlAttributes: { lang: 'en' },
-    title: 'PolyStyle: Editor',
+    title: 'Stylish: Editor',
     titleTemplate: 'React Cool Starter - %s',
     meta: [
       { name: 'description', content: 'The best react universal starter boilerplate in the world.' },
