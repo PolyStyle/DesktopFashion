@@ -220,10 +220,10 @@ class Brands extends Component {
                               callBackFileUploaded={this.imageBrandBackgroundUploadedHandler}
                               maxFiles={1}
                               sizes={[
-                                { width: 320, height: 480 },
-                                { width: 640, height: 1136 },
-                                { width: 1242, height: 2208 },
-                                { width: 2000, height: 3000 },
+                                { height: 320, width: 480 },
+                                { height: 640, width: 1136 },
+                                { height: 1242, width: 2208 },
+                                { height: 2000, width: 3000 },
                               ]}
                             />
                           </Col>
